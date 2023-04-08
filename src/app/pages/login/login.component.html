@@ -1,0 +1,26 @@
+<section id="contact" class="contact">
+    <div class="container" data-aos="fade-up">
+        <div class="section-title">
+            <h3><span>LOGIN</span></h3>
+        </div>
+        <div class="row" data-aos="fade-up" data-aos-delay="100">
+            <div class="col-lg-3">
+            </div>
+            <div class="col-lg-6">
+                <form role="form" class="php-email-form" [formGroup]="formGroup">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="phone" id="phone"
+                            placeholder="Your Mobile Number" formControlName="mobile" autocomplete="off">
+                    </div>
+                    <div class="form-group" *ngIf="showOtp">
+                        <input type="text" class="form-control" name="otp" id="otp" placeholder="Enter OTP" formControlName="otp">
+                    </div>
+                    <div class="text-center"><button type="submit" (click)="submit()"
+                            [disabled]="formGroup.invalid||(showOtp&&!formGroup.value.otp)">{{showOtp? 'Login' : 'Send OTP'}}</button></div>
+                </form>
+            </div>
+            <div class="col-lg-3">
+            </div>
+        </div>
+    </div>
+</section>

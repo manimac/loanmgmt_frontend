@@ -1,0 +1,46 @@
+<!-- ======= Top Bar ======= -->
+<section id="topbar" class="d-flex align-items-center">
+    <div class="container d-flex justify-content-center justify-content-md-between">
+        <div class="contact-info d-flex align-items-center">
+            <i class="bi bi-envelope d-flex align-items-center"><a
+                    href="mailto:contact@example.com">contact@example.com</a></i>
+            <i class="bi bi-phone d-flex align-items-center ms-4"><span>+1 5589 55488 55</span></i>
+        </div>
+        <div class="social-links d-none d-md-flex align-items-center">
+        </div>
+    </div>
+</section>
+<!-- ======= Header ======= -->
+<header id="header" class="d-flex align-items-center">
+    <div class="container d-flex align-items-center justify-content-between">
+
+        <h1 class="logo"><a href="index.html">Madras <span>Technologies</span></a></h1>
+        <!-- Uncomment below if you prefer to use an image logo -->
+        <!-- <a href="index.html" class="logo"><img src="assets/img/logo.png" alt=""></a>-->
+
+        <nav id="navbar" class="navbar">
+            <ul>
+                <li><a class="nav-link scrollto" href="javascript:void(0)" routerLink="/home" routerLinkActive="active">Home</a></li>
+                <li *ngIf="isEnableAdminAccess"><a class="nav-link scrollto " href="#portfolio" routerLink="/profile" routerLinkActive="active">Profiles</a></li>
+                <li *ngIf="isEnableAdminManagerAccess"><a class="nav-link scrollto " href="#portfolio" routerLink="/loans" routerLinkActive="active">Loans</a></li>
+                <li *ngIf="isLoggedIn"><a class="nav-link scrollto " href="#portfolio" routerLink="/portfolios" routerLinkActive="active">Portfolios</a></li>
+                <li *ngIf="isEnableAdminAccess"><a class="nav-link scrollto" href="#team" routerLink="/approvals" routerLinkActive="active">Approvals</a></li>
+                <li *ngIf="isEnableAdminManagerAccess"><a class="nav-link scrollto" href="#team" routerLink="/reports" routerLinkActive="active">Reports</a></li>
+                <li class="dropdown" *ngIf="isEnableAdminManagerAccess"><a href="javascript:void(0)"><span>History</span> <i class="bi bi-chevron-down"></i></a>
+                    <ul>
+                        <li *ngIf="isEnableAdminAccess"><a href="javascript:void(0)" routerLink="/transaction-history" routerLinkActive="active">Transaction History</a></li>
+                        <li><a href="javascript:void(0)" routerLink="/price-history" routerLinkActive="active">Price History</a></li>
+                    </ul>
+                </li>
+                <li *ngIf="!isLoggedIn"><a class="nav-link scrollto" href="#team" routerLink="/login" routerLinkActive="active">Login</a></li>
+                <li class="dropdown" *ngIf="isLoggedIn"><a href="javascript:void(0)" routerLinkActive="active"><span *ngIf="userDetails">{{userDetails.name}}</span> <i class="bi bi-chevron-down"></i></a>
+                    <ul>
+                        <li><a href="javascript:void(0)" (click)="logout()">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav><!-- .navbar -->
+
+    </div>
+</header><!-- End Header -->
