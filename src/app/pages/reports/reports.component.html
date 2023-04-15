@@ -77,12 +77,12 @@
                         </tr>
                         <tr>
                             <td>Cash</td>
-                            <td>{{loanTable.cash ? loanTable.cash : 0}}</td>
+                            <td [innerHtml]="getCash(loanTable)"></td>
                             <td><button class="btn btn-primary" *ngIf="userRole=='Admin'" (click)="openModal(paymentform, 'cash')">Withdraw</button></td>
                         </tr>
                         <tr>
                             <td>Bank</td>
-                            <td>{{loanTable.bank ? loanTable.bank : 0}}</td>
+                            <td [innerHtml]="getBank(loanTable)"></td>
                             <td><button class="btn btn-primary" *ngIf="userRole=='Admin'" (click)="openModal(paymentform, 'bank')">Deposit</button></td>
                         </tr>
                         <tr>

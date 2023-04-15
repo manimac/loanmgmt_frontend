@@ -36,9 +36,10 @@
                             <th scope="col">Fathername</th>
                             <th scope="col">DOB</th>
                             <th scope="col">Role</th>
-                            <th scope="col">Nominee name</th>
-                            <th scope="col">Nominee mobile</th>
+                            <th scope="col">Nominee</th>
+                            <th scope="col">Payout</th>
                             <th scope="col">Units</th>
+                            <th scope="col">Unit Rate</th>
                             <th scope="col">Value</th>       
                             <th scope="col">Image</th>
                         </tr>                 
@@ -53,8 +54,9 @@
                             <td>{{profileDetails.nomineename}}</td>
                             <td>{{profileDetails.nomineemobile}}</td>
                             <td>{{numberOfUnits}}</td>
-                            <td>{{unitsValue}}</td>
-                            <td><img src="{{profileDetails.path}}{{profileDetails.image}}" class="profile-img"></td>
+                            <td>{{reportData?.unitRate}}</td>
+                            <td [innerHtml]="getcurrentValue()">{{unitsValue}}</td>
+                            <td><img src="{{profileDetails.path}}{{profileDetails.image}}" class="profile-img" *ngIf="profileDetails.image"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -64,15 +66,15 @@
                 <div class="col-lg-12 text-end">
                     <button class="btn btn-primary"
                         *ngIf="!isClient"
-                        (click)="openModal(investmentForm)">Add Investment</button>
+                        (click)="openModal(investmentForm)">Investment</button>
                 </div>
                 <table class="table table-bordered mt-3">
                     <thead>
                         <tr>
                             <th scope="col">Type</th>
                             <th scope="col">Units</th>
-                            <th scope="col">Value</th>
                             <th scope="col">Rate</th>
+                            <th scope="col">Value</th>
                             <th scope="col">Status</th>
                         </tr>
                     </thead>
@@ -80,8 +82,8 @@
                         <tr *ngFor="let investment of investmentLists | paginate: { id: 'pagination1', itemsPerPage: 5, currentPage: investmentPage };let i=index;">
                             <td>{{investment.type}}</td>
                             <td>{{investment.units}}</td>
-                            <td>{{investment.value}}</td>
                             <td>{{investment.rate}}</td>
+                            <td>{{investment.value}}</td>
                             <td [innerHtml]="getStatus(investment)"></td>
                         </tr>
                         <tr *ngIf="investmentLists.length==0" class="text-center">
@@ -113,7 +115,7 @@
                             <th scope="col">Interst Amount</th>
                             <th scope="col">Balance</th>
                             <th scope="col">Status</th>
-                            <th scope="col">Repayment</th>
+                            <th scope="col" *ngIf="!isClient">Repayment</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -128,7 +130,7 @@
                             <td [innerHtml]="getInterestAmount(loan)"></td>
                             <td [innerHtml]="getBalance(loan)"></td>
                             <td [innerHtml]="getStatus(loan)"></td>
-                            <td><button class="btn btn-primary" (click)="openRepaymentModal(repaymentForm, loan)" *ngIf="loan.status==2">Repayment</button></td>
+                            <td *ngIf="!isClient"><button class="btn btn-primary" (click)="openRepaymentModal(repaymentForm, loan)" *ngIf="loan.status==2">Repayment</button></td>
                         </tr>
                         <tr *ngIf="loanLists.length==0" class="text-center">
                             <td colspan="12">No records found</td>
@@ -168,7 +170,7 @@
 
 <ng-template #investmentForm>
     <div class="modal-header">
-       <h4 class="modal-title pull-left">Add Investment</h4>
+       <h4 class="modal-title pull-left">Investment</h4>
        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
           <span aria-hidden="true">×</span>
        </button>
@@ -178,7 +180,19 @@
             <div class="row">
                 <div class="col-lg-3">
                     <div class="form-group">
-                        <label>value:</label>
+                        <label>Type:</label>
+                        <select class="form-control" formControlName="type" (change)="updateRedemption()">
+                            <option value="" disabled>Select Type</option>
+                            <!-- <option value="Redeem">Redeem</option> -->
+                            <option value="Purchase">Purchase</option>
+                            <option value="Full Redemption">Full Redemption</option>
+                            <option value="Part Redemption">Part Redemption</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Value:</label>
                         <input type="text" class="form-control" formControlName="value" appAcceptNumberOnly (keyup)="updateUnits()">
                     </div>
                 </div>
@@ -196,21 +210,10 @@
                 </div>
                 <div class="col-lg-3">
                     <div class="form-group">
-                        <label>type:</label>
-                        <select class="form-control" formControlName="type">
-                            <option value="" disabled>Select Type</option>
-                            <option value="Redeem">Redeem</option>
-                            <option value="Purchase">Purchase</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="form-group">
                         <label>Payment Type:</label>
                         <select class="form-control" formControlName="paymenttype">
                             <option value="">Select Payment Type</option>
-                            <option value="cash">Cash</option>
-                            <option value="bank">Bank</option>
+                            <option value="{{paymentt.value}}" *ngFor="let paymentt of paymentTypes">{{paymentt.label}}</option>
                         </select>
                     </div>
                 </div>

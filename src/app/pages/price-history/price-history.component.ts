@@ -17,9 +17,9 @@ export class PriceHistoryComponent implements OnInit {
   p: number = 1;
   constructor(private http: HttpRequestService, private storage: StorageService, private router: Router) {
     let userRole: any = this.storage.getRole();
-    if (userRole && (userRole != 'Admin')) {
-      this.router.navigateByUrl("/home");
-    }
+    // if (userRole && (userRole != 'Admin')) {
+    //   this.router.navigateByUrl("/home");
+    // }
   }
 
   ngOnInit(): void {

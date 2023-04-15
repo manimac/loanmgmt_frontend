@@ -9,7 +9,6 @@ import { FooterComponent } from './layouts/footer/footer.component';
 import { HomeComponent } from './pages/home/home.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { ProfileViewComponent } from './pages/profile-view/profile-view.component';
-import { LoanComponent } from './pages/loan/loan.component';
 import { AppRoutingModule } from './app-routing.module';
 import { RouterModule } from '@angular/router';
 import { PortfoliosComponent } from './pages/portfolios/portfolios.component';
@@ -28,6 +27,7 @@ import { AcceptNumberOnlyDirective } from './services/accept-number-only.directi
 import { LoansComponent } from './pages/loans/loans.component';
 import { FilterLoansPipe } from './pipes/filter-loans.pipe';
 import {NgxPaginationModule} from 'ngx-pagination';
+import { AcceptNumberDecimalDirective } from './services/accept-number-decimal.directive';
 
 @NgModule({
   declarations: [
@@ -37,7 +37,6 @@ import {NgxPaginationModule} from 'ngx-pagination';
     HomeComponent,
     ProfileComponent,
     ProfileViewComponent,
-    LoanComponent,
     PortfoliosComponent,
     ApprovalsComponent,
     ReportsComponent,
@@ -47,7 +46,8 @@ import {NgxPaginationModule} from 'ngx-pagination';
     LoaderComponent,
     AcceptNumberOnlyDirective,
     LoansComponent,
-    FilterLoansPipe
+    FilterLoansPipe,
+    AcceptNumberDecimalDirective
   ],
   imports: [
     BrowserModule,

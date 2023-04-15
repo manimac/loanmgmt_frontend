@@ -35,6 +35,7 @@ export class PortfoliosComponent implements OnInit {
   investmentPage: number = 1;
   loanPage: number = 1;
   repaymentPage: number = 1;
+  paymentTypes: any = [];
   constructor(private http: HttpRequestService, private storage: StorageService, private router: Router, private modalService: BsModalService) {
 
   }
@@ -92,6 +93,28 @@ export class PortfoliosComponent implements OnInit {
       this.isClient = false;
     }
 
+    if(this.role == 'Admin'){
+      this.paymentTypes = [{
+        label: 'Cash',
+        value: 'cash',
+      },{
+        label: 'Bank',
+        value: 'bank',
+      },{
+        label: 'AMC',
+        value: 'amc',
+      }]
+    }
+    else{
+      this.paymentTypes = [{
+        label: 'Cash',
+        value: 'cash',
+      },{
+        label: 'Bank',
+        value: 'bank',
+      }]
+    }
+
     const today: any = new Date();
     const yyyy: any = today.getFullYear();
     let mm: any = today.getMonth() + 1; // Months start at 0!
@@ -105,6 +128,9 @@ export class PortfoliosComponent implements OnInit {
     this.http.post('report/list', { fromdate: formattedToday, todate: formattedToday }).subscribe(
       (response: any) => {
         this.reportData = response;
+        if(this.reportData.unitRate){
+          this.reportData.unitRate = Number(this.reportData.unitRate).toFixed(4)
+        }
         console.log(response);
       });
   }
@@ -130,26 +156,45 @@ export class PortfoliosComponent implements OnInit {
           this.showForm = true;
         }
         if (response && response.loans) {
-          this.loanLists = response.loans;
+          if(this.role == 'Client'){
+            this.loanLists = response.loans.filter((element: any)=>(element.status!=1));
+          }
+          else{
+            this.loanLists = response.loans;
+          }          
         }
         if (response && response.repayment) {
-          this.repayment = response.repayment;
+          if(this.role == 'Client'){
+            this.repayment = response.repayment.filter((element: any)=>(element.status!=1));
+          }
+          else{
+            this.repayment = response.repayment;
+          }
         }
         if (response && response.investment) {
-          this.investmentLists = response.investment;
+          if(this.role == 'Client'){
+            this.investmentLists = response.investment.filter((element: any)=>(element.status!=1));
+          }
+          else{
+            this.investmentLists = response.investment;
+          }
+          // this.investmentLists = response.investment;
           this.numberOfUnits = 0;
           this.unitsValue = 0;
           this.investmentLists.forEach((element: any) => {
-            if (element.status == 2) {
-              this.numberOfUnits = this.numberOfUnits + Number(element.units);
+            if (element.status == 2) {   
+              element.units = parseFloat(element.units).toFixed(4);           
               if (element.type == 'Redeem') {
                 this.unitsValue = this.unitsValue - Number(element.value);
+                this.numberOfUnits = this.numberOfUnits - Number(element.units);
               }
               else {
                 this.unitsValue = this.unitsValue + Number(element.value);
+                this.numberOfUnits = this.numberOfUnits + Number(element.units);
               }
             }
-          });
+          });          
+          this.numberOfUnits = parseFloat(this.numberOfUnits).toFixed(4);
         }
       },
       (error: any) => {
@@ -314,7 +359,7 @@ export class PortfoliosComponent implements OnInit {
     let obj = {
       status: 0,
       profile_id: this.profileDetails.id,
-      rate: Number(this.reportData.unitRate)
+      rate: Number(this.reportData.unitRate).toFixed(4)
     }
     this.investmentFormGroup.patchValue(obj);
     this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
@@ -341,7 +386,10 @@ export class PortfoliosComponent implements OnInit {
   }
 
   saveInvestment() {
-    if ((this.investmentFormGroup.value.type == 'Purchase') || ((this.investmentFormGroup.value.type == 'Redeem') && (this.unitsValue > this.investmentFormGroup.value.value))) {
+    if(this.investmentFormGroup.value.type !='Purchase'){
+      this.investmentFormGroup.value.type = 'Redeem';
+    }
+    if ((this.investmentFormGroup.value.type == 'Purchase') || ((this.investmentFormGroup.value.type == 'Redeem') && (Number(this.numberOfUnits) >= Number(this.investmentFormGroup.value.units)))) {
       let userId = this.storage.getUserId();
       this.investmentFormGroup.value['maker_id'] = userId;
       this.http.post('investment/create', this.investmentFormGroup.value).subscribe(
@@ -424,6 +472,23 @@ export class PortfoliosComponent implements OnInit {
       data = parseFloat(data).toFixed(2);
       this.investmentFormGroup.patchValue({ units: data });
     }
+  }
+
+  updateRedemption(){
+    if(this.investmentFormGroup.value.type == 'Full Redemption'){
+      let value = (this.numberOfUnits && this.reportData.unitRate) ? Number(this.numberOfUnits) * Number(this.reportData.unitRate) : 0;
+      let obj = {units: this.numberOfUnits, value: value};
+      this.investmentFormGroup.patchValue(obj);
+      this.updateUnits()
+    }
+  }
+
+  getcurrentValue(){
+    let data: any = 0;
+    if(this.numberOfUnits && this.reportData.unitRate){
+      data = Number(this.numberOfUnits) * Number(this.reportData.unitRate)
+    }
+    return data ? parseFloat(data).toFixed(4) : data;
   }
 
 }

@@ -7,7 +7,7 @@
             <div class="col-lg-12 mt-2">
                 <div class="row">
                     <div class="col-lg-3">
-                        <input type="text" [(ngModel)]="mobile" class="form-control" placeholder="Mobile number">
+                        <input type="text" [(ngModel)]="mobile" class="form-control" placeholder="Mobile number" appAcceptNumberOnly maxlength="10">
                     </div>
                     <div class="col-lg-3">
                         <select class="form-control" [(ngModel)]="status">
@@ -16,6 +16,8 @@
                             <option value="2">Active</option>
                             <option value="1">Declined</option>
                             <option value="3">Closed</option>
+                            <option value="Due">Due</option>
+                            <option value="Overdue">Overdue</option>
                         </select>
                     </div>
                     <div class="col-lg-6">
@@ -34,7 +36,7 @@
                             <th scope="col">Renewal Date</th>
                             <th scope="col">Prinicipal O/S</th>
                             <th scope="col">No of Days</th>
-                            <th scope="col">Interst Amount</th>
+                            <th scope="col">Interest Amount</th>
                             <th scope="col">Balance</th>
                             <th scope="col">Status</th>
                         </tr>
@@ -51,6 +53,7 @@
                             <td [innerHtml]="getNumberofDays(loan.renewaldate, loan.status)"></td>
                             <td [innerHtml]="getInterestAmount(loan)"></td>
                             <td [innerHtml]="getBalance(loan)"></td>
+                            <!-- <td>{{loan.loanstatus}}</td> -->
                             <td [innerHtml]="getStatus(loan)"></td>
                         </tr>
                         <tr *ngIf="dataLists.length==0" class="text-center">

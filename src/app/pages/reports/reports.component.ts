@@ -104,21 +104,45 @@ export class ReportsComponent implements OnInit {
   savepayment(){
     let cash: any = this.currentCashValue;
     let bank: any = this.currentBankValue;
-    if(this.paymentType == 'cash'){
-      cash = Number(cash) + Number(this.paymentFormGroup.value.value);
-      bank = Number(bank) - Number(this.paymentFormGroup.value.value);
+    let error = 0;
+    if(this.paymentType == 'cash'){      
+      if(Number(this.paymentFormGroup.value.value) > Number(bank)){
+        error = 1;
+      }
+      else{
+        cash = Number(cash) + Number(this.paymentFormGroup.value.value);
+        bank = Number(bank) - Number(this.paymentFormGroup.value.value);
+      }
     }
     else if(this.paymentType == 'bank'){
-      cash = Number(cash) - Number(this.paymentFormGroup.value.value);
-      bank = Number(bank) + Number(this.paymentFormGroup.value.value);
+      if(Number(this.paymentFormGroup.value.value) > Number(cash)){
+        error = 1;
+      }
+      else{
+        cash = Number(cash) - Number(this.paymentFormGroup.value.value);
+        bank = Number(bank) + Number(this.paymentFormGroup.value.value);
+      }
     }
-    this.http.post('payment/update', {cash: cash, bank: bank, type: this.paymentType, value: this.paymentFormGroup.value.value}).subscribe(
-      (response: any) => {
-        this.paymentFormGroup.reset();
-        this.paymentType = '';
-        this.modalRef.hide()
-        this.search();
-      });
+    if(error == 1){
+      this.http.errorMessage("Insufficent balance");
+    }
+    else{
+      this.http.post('payment/update', {cash: cash, bank: bank, type: this.paymentType, value: this.paymentFormGroup.value.value}).subscribe(
+        (response: any) => {
+          this.paymentFormGroup.reset();
+          this.paymentType = '';
+          this.modalRef.hide()
+          this.search();
+        });
+    }    
+  }
+
+  getCash(loanTable: any){
+    return loanTable.cash ? parseFloat(loanTable.cash).toFixed(2) : 0
+  }
+
+  getBank(loanTable: any){
+    return loanTable.bank ? parseFloat(loanTable.bank).toFixed(2) : 0
   }
 
 }

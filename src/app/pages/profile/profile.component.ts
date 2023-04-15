@@ -16,10 +16,23 @@ export class ProfileComponent implements OnInit {
   formGroup: any;
   profileLists: any = [];
   p: number = 1;
+  payout: any = ''
+  status: any = ''
+  mobile: any = ''
+  roles: any = [];
   constructor(private http: HttpRequestService, private storage: StorageService, private router: Router) {
     let userRole: any = this.storage.getRole();
-    if (userRole && (userRole != 'Admin')) {
+    if (userRole && (userRole == 'Client')) {
       this.router.navigateByUrl("/home");
+    }
+    if (userRole && (userRole == 'Admin')) {
+      this.roles = ['Client', 'Admin', 'Manager', 'Executive']
+    }
+    else if (userRole && (userRole != 'Admin') && (userRole != 'Client')) {
+      this.roles = ['Client']
+    }
+    else {
+      this.roles = []
     }
   }
 
@@ -39,27 +52,50 @@ export class ProfileComponent implements OnInit {
       nomineemobile: new FormControl('', Validators.required),
       status: new FormControl('', Validators.required),
       accountno: new FormControl('', Validators.required),
-      ifsc: new FormControl('', Validators.required),
+      ifsc: new FormControl('', [Validators.required, Validators.minLength(12)]),
     })
   }
 
   create() {
     this.showForm = true;
     this.formGroup.reset();
-    this.formGroup.patchValue({status: 2})
+    this.formGroup.patchValue({ status: 2 })
   }
 
-  getDOB(){
+  getDOB() {
     var date = new Date();
-    date.setFullYear( date.getFullYear() - 18 );
+    date.setFullYear(date.getFullYear() - 18);
     return date.toISOString().split('T')[0];
   }
 
   loadData() {
     this.p = 1;
-    this.http.get('profile/list').subscribe(
+    this.http.post('profile/filterlist', { mobile: this.mobile, status: this.status, payout: this.payout }).subscribe(
       (response: any) => {
-        this.profileLists = response;
+        if (response && response.entries) {
+          this.profileLists = response.entries;
+        }
+        if (response && response.investment) {
+          this.profileLists.forEach((element: any) => {
+            element['units'] = 0;
+            element['unitsvalue'] = 0;
+            response.investment.forEach((element2: any) => {
+              if (element.id == element2.profile_id) {
+                if (element2.type == 'Redeem') {
+                  element['units'] = element['units'] - Number(element2.units);
+                  element['unitsvalue'] = element['unitsvalue'] - Number(element2.value);
+                }
+                else {
+                  element['units'] = element['units'] + Number(element2.units);
+                  element['unitsvalue'] = element['unitsvalue'] + Number(element2.value);
+                }
+              }
+            })
+            element['units'] = parseFloat(element['units']).toFixed(2);
+          })
+        }
+        console.log(this.profileLists);
+
       }, (error: any) => {
         this.http.exceptionHandling(error);
       }
@@ -82,48 +118,61 @@ export class ProfileComponent implements OnInit {
     this.formGroup.reset();
   }
 
+  _calculateAge(birthday: any) { // birthday is a date
+    var ageDifMs = Date.now() - birthday.getTime();
+    var ageDate = new Date(ageDifMs); // miliseconds from epoch
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+}
+
   submit() {
-    this.http.post("profile/isMobileExist", this.formGroup.value).subscribe(
-      (response: any) => {
-        let url = (this.formGroup.value.id) ? 'profile/update' : 'profile/create';
-        let userId = this.storage.getUserId();
-        let _form = new FormData();
-        _form.append('id', this.formGroup.value.id);
-        _form.append('name', this.formGroup.value.name);
-        _form.append('fathername', this.formGroup.value.fathername);
-        _form.append('mobile', this.formGroup.value.mobile);
-        _form.append('image', this.formGroup.value.image);
-        _form.append('dob', this.formGroup.value.dob);
-        _form.append('gender', this.formGroup.value.gender);
-        _form.append('role', this.formGroup.value.role);
-        _form.append('address', this.formGroup.value.address);
-        _form.append('nomineename', this.formGroup.value.nomineename);
-        _form.append('nomineemobile', this.formGroup.value.nomineemobile);
-        _form.append('status', this.formGroup.value.id ? this.formGroup.value.status : 2);
-        _form.append('accountno', this.formGroup.value.accountno);
-        _form.append('ifsc', this.formGroup.value.ifsc);
-        _form.append('maker_id', userId);
-        this.http.post(url, _form).subscribe(
-          (response: any) => {
-            if (this.formGroup.value.id) {
-              this.http.successMessage('Updated');
+    var age = this._calculateAge(new Date(this.formGroup.value.dob));
+
+    if (age < 18) {
+      this.http.errorMessage('Profile will create for 18years above');
+    } else {
+      this.http.post("profile/isMobileExist", this.formGroup.value).subscribe(
+        (response: any) => {
+          let url = (this.formGroup.value.id) ? 'profile/update' : 'profile/create';
+          let userId = this.storage.getUserId();
+          let _form = new FormData();
+          _form.append('id', this.formGroup.value.id);
+          _form.append('name', this.formGroup.value.name);
+          _form.append('fathername', this.formGroup.value.fathername);
+          _form.append('mobile', this.formGroup.value.mobile);
+          _form.append('image', this.formGroup.value.image);
+          _form.append('dob', this.formGroup.value.dob);
+          _form.append('gender', this.formGroup.value.gender);
+          _form.append('role', this.formGroup.value.role);
+          _form.append('address', this.formGroup.value.address);
+          _form.append('nomineename', this.formGroup.value.nomineename);
+          _form.append('nomineemobile', this.formGroup.value.nomineemobile);
+          _form.append('status', this.formGroup.value.id ? this.formGroup.value.status : 2);
+          _form.append('accountno', this.formGroup.value.accountno);
+          _form.append('ifsc', this.formGroup.value.ifsc);
+          _form.append('maker_id', userId);
+          this.http.post(url, _form).subscribe(
+            (response: any) => {
+              if (this.formGroup.value.id) {
+                this.http.successMessage('Updated');
+              }
+              else {
+                this.http.successMessage('Created');
+              }
+              this.showForm = false;
+              this.formGroup.reset();
+              this.loadData();
+            },
+            (error: any) => {
+              this.http.exceptionHandling(error);
             }
-            else {
-              this.http.successMessage('Created');
-            }
-            this.showForm = false;
-            this.formGroup.reset();
-            this.loadData();
-          },
-          (error: any) => {
-            this.http.exceptionHandling(error);
-          }
-        )
-      },
-      (error: any) => {
-        this.http.exceptionHandling(error);
-      }
-    )    
+          )
+        },
+        (error: any) => {
+          this.http.exceptionHandling(error);
+        }
+      )
+    }
+    
   }
 
   deleteElement(id: number) {
@@ -151,6 +200,8 @@ export class ProfileComponent implements OnInit {
         'DOB': data[key].dob,
         'gender': data[key].gender,
         'Role': data[key].role,
+        'Units': data[key].units,
+        'Value': data[key].unitsvalue,
         'Address': data[key].address,
         'Nominee Name': data[key].nomineename,
         'Payout': data[key].nomineemobile,
@@ -162,6 +213,22 @@ export class ProfileComponent implements OnInit {
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'All Ind. Searched Data Export');
     XLSX.writeFile(wb, 'Profiles.xlsx');
+  }
+
+  alphaNumberOnly(e: any) {  // Accept only alpha numerics, not special characters 
+    var regex = new RegExp("^[a-zA-Z0-9 ]+$");
+    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+    if (regex.test(str)) {
+      return true;
+    }
+
+    e.preventDefault();
+    return false;
+  }
+
+  onPaste(e: any) {
+    e.preventDefault();
+    return false;
   }
 
 }

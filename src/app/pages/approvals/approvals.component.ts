@@ -24,7 +24,7 @@ export class ApprovalsComponent implements OnInit {
   p: number = 1;
   constructor(private http: HttpRequestService, private storage: StorageService, private router: Router, private modalService: BsModalService) {
     let userRole: any = this.storage.getRole();
-    if (userRole && (userRole != 'Admin')) {
+    if (userRole && (userRole != 'Admin' && userRole != 'Manager')) {
       this.router.navigateByUrl("/home");
     }
   }
@@ -97,12 +97,12 @@ export class ApprovalsComponent implements OnInit {
   
   openModal(template: TemplateRef<any>, type: any, approval: any) {
     this.approveDetails = approval;
-    if(type == 'Profile' || type == 'Loan'){
+    // if(type == 'Profile' || type == 'Loan' || type == 'Repayment'){
       this.modalRef = this.modalService.show(template, { class: 'modal-xl', backdrop: 'static' });
-    }
-    else{
-      this.modalRef = this.modalService.show(template);
-    }
+    // }
+    // else{
+    //   this.modalRef = this.modalService.show(template);
+    // }
   }
 
   updateStatus(status: any){

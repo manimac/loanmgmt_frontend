@@ -22,13 +22,9 @@ export class TransactionHistoryComponent implements OnInit {
   p: number = 1;
   constructor(private http: HttpRequestService, private storage: StorageService, private router: Router) {
     let userRole: any = this.storage.getRole();
-    if (userRole && (userRole != 'Admin')) {
-      this.router.navigateByUrl("/home");
-    }
   }
 
   ngOnInit(): void {
-    this.loadData();
     const today: any = new Date();
     const yyyy: any = today.getFullYear();
     let mm: any = today.getMonth() + 1; // Months start at 0!
@@ -40,6 +36,7 @@ export class TransactionHistoryComponent implements OnInit {
     const formattedToday = yyyy + '-' + mm + '-' + dd;
     this.fromDate = formattedToday;
     this.toDate = formattedToday;
+    this.loadData();
   }
 
   loadData() {
