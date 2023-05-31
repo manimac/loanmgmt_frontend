@@ -20,6 +20,7 @@ export class ProfileComponent implements OnInit {
   status: any = ''
   mobile: any = ''
   roles: any = [];
+  isAdmin: boolean = false;
   constructor(private http: HttpRequestService, private storage: StorageService, private router: Router) {
     let userRole: any = this.storage.getRole();
     if (userRole && (userRole == 'Client')) {
@@ -33,6 +34,12 @@ export class ProfileComponent implements OnInit {
     }
     else {
       this.roles = []
+    }
+    if (userRole && (userRole == 'Admin')) {
+      this.isAdmin = true;
+    }
+    else{
+      this.isAdmin = false;
     }
   }
 
@@ -52,7 +59,7 @@ export class ProfileComponent implements OnInit {
       nomineemobile: new FormControl('', Validators.required),
       status: new FormControl('', Validators.required),
       accountno: new FormControl('', Validators.required),
-      ifsc: new FormControl('', [Validators.required, Validators.minLength(12)]),
+      ifsc: new FormControl('', [Validators.required, Validators.minLength(11)]),
     })
   }
 

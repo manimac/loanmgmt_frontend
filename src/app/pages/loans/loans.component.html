@@ -23,44 +23,48 @@
                     <div class="col-lg-6">
                         <button class="btn btn-primary" (click)="loadData()">Search</button>
                         <button class="btn btn-primary ms-4" (click)="export()">Export</button>
+                        <button class="btn btn-primary ms-4" (click)="sendReminder()">Send Reminder</button>
                     </div>
                 </div>
-                <table class="table table-bordered mt-3">
-                    <thead>
-                        <tr>
-                            <th scope="col">Loan Id</th>
-                            <th scope="col">Loan Name</th>
-                            <th scope="col">Mobile</th>
-                            <th scope="col">Loan Date</th>
-                            <th scope="col">Loan Disbursed</th>
-                            <th scope="col">Renewal Date</th>
-                            <th scope="col">Prinicipal O/S</th>
-                            <th scope="col">No of Days</th>
-                            <th scope="col">Interest Amount</th>
-                            <th scope="col">Balance</th>
-                            <th scope="col">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let loan of dataLists | paginate: { itemsPerPage: 10, currentPage: p };let i=index;">
-                            <td>{{loan.id}}</td>
-                            <td>{{loan.Profile?.name}}</td>
-                            <td>{{loan.mobile}}</td>
-                            <td>{{loan.date}}</td>
-                            <td>{{loan.disbursed}}</td>
-                            <td>{{loan.renewaldate}}</td>
-                            <td>{{loan.principle}}</td>
-                            <td [innerHtml]="getNumberofDays(loan.renewaldate, loan.status)"></td>
-                            <td [innerHtml]="getInterestAmount(loan)"></td>
-                            <td [innerHtml]="getBalance(loan)"></td>
-                            <!-- <td>{{loan.loanstatus}}</td> -->
-                            <td [innerHtml]="getStatus(loan)"></td>
-                        </tr>
-                        <tr *ngIf="dataLists.length==0" class="text-center">
-                            <td colspan="12">No records found</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-bordered mt-3">
+                        <thead>
+                            <tr>
+                                <th scope="col">Loan Id</th>
+                                <th scope="col">Loan Name</th>
+                                <th scope="col">Mobile</th>
+                                <th scope="col">Loan Date</th>
+                                <th scope="col">Loan Disbursed</th>
+                                <th scope="col">Renewal Date</th>
+                                <th scope="col">Prinicipal O/S</th>
+                                <th scope="col">No of Days</th>
+                                <th scope="col">Interest Amount</th>
+                                <th scope="col">Balance</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let loan of dataLists | paginate: { itemsPerPage: 10, currentPage: p };let i=index;">
+                                <td>{{loan.id}}</td>
+                                <td>{{loan.Profile?.name}}</td>
+                                <td>{{loan.mobile}}</td>
+                                <td>{{loan.date}}</td>
+                                <td>{{loan.disbursed}}</td>
+                                <td>{{loan.renewaldate}}</td>
+                                <td>{{loan.principle}}</td>
+                                <td [innerHtml]="getNumberofDays(loan.renewaldate, loan.status)"></td>
+                                <td [innerHtml]="getInterestAmount(loan)"></td>
+                                <td [innerHtml]="getBalance(loan)"></td>
+                                <!-- <td>{{loan.loanstatus}}</td> -->
+                                <td [innerHtml]="getStatus(loan)"></td>
+                            </tr>
+                            <tr *ngIf="dataLists.length==0" class="text-center">
+                                <td colspan="12">No records found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
                 <pagination-controls (pageChange)="p = $event"></pagination-controls>
             </div>
         </div>

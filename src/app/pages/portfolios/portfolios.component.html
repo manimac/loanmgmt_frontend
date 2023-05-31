@@ -28,38 +28,41 @@
         <div class="row mt-5" data-aos="fade-up" data-aos-delay="100" *ngIf="showForm">
             <div class="col-lg-12">
                 <h4><span>Client Details</span></h4>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Mobile</th>
-                            <th scope="col">Fathername</th>
-                            <th scope="col">DOB</th>
-                            <th scope="col">Role</th>
-                            <th scope="col">Nominee</th>
-                            <th scope="col">Payout</th>
-                            <th scope="col">Units</th>
-                            <th scope="col">Unit Rate</th>
-                            <th scope="col">Value</th>       
-                            <th scope="col">Image</th>
-                        </tr>                 
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{profileDetails.name}}</td>
-                            <td>{{profileDetails.mobile}}</td>
-                            <td>{{profileDetails.fathername}}</td>
-                            <td>{{profileDetails.dob}}</td>
-                            <td>{{profileDetails.role}}</td>
-                            <td>{{profileDetails.nomineename}}</td>
-                            <td>{{profileDetails.nomineemobile}}</td>
-                            <td>{{numberOfUnits}}</td>
-                            <td>{{reportData?.unitRate}}</td>
-                            <td [innerHtml]="getcurrentValue()">{{unitsValue}}</td>
-                            <td><img src="{{profileDetails.path}}{{profileDetails.image}}" class="profile-img" *ngIf="profileDetails.image"></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Mobile</th>
+                                <th scope="col">Fathername</th>
+                                <th scope="col">DOB</th>
+                                <th scope="col">Role</th>
+                                <th scope="col">Nominee</th>
+                                <th scope="col">Payout</th>
+                                <th scope="col">Units</th>
+                                <th scope="col">Unit Rate</th>
+                                <th scope="col">Value</th>       
+                                <th scope="col">Image</th>
+                            </tr>                 
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{profileDetails.name}}</td>
+                                <td>{{profileDetails.mobile}}</td>
+                                <td>{{profileDetails.fathername}}</td>
+                                <td>{{profileDetails.dob}}</td>
+                                <td>{{profileDetails.role}}</td>
+                                <td>{{profileDetails.nomineename}}</td>
+                                <td>{{profileDetails.nomineemobile}}</td>
+                                <td>{{numberOfUnits}}</td>
+                                <td>{{reportData?.unitRate}}</td>
+                                <td [innerHtml]="getcurrentValue()">{{unitsValue}}</td>
+                                <td><img src="{{profileDetails.path}}{{profileDetails.image}}" class="profile-img" *ngIf="profileDetails.image"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
             </div>
             <div class="col-lg-12" *ngIf="profileDetails&&profileDetails.id">
                 <h4><span>Investment Details</span></h4>
@@ -68,29 +71,31 @@
                         *ngIf="!isClient"
                         (click)="openModal(investmentForm)">Investment</button>
                 </div>
-                <table class="table table-bordered mt-3">
-                    <thead>
-                        <tr>
-                            <th scope="col">Type</th>
-                            <th scope="col">Units</th>
-                            <th scope="col">Rate</th>
-                            <th scope="col">Value</th>
-                            <th scope="col">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let investment of investmentLists | paginate: { id: 'pagination1', itemsPerPage: 5, currentPage: investmentPage };let i=index;">
-                            <td>{{investment.type}}</td>
-                            <td>{{investment.units}}</td>
-                            <td>{{investment.rate}}</td>
-                            <td>{{investment.value}}</td>
-                            <td [innerHtml]="getStatus(investment)"></td>
-                        </tr>
-                        <tr *ngIf="investmentLists.length==0" class="text-center">
-                            <td colspan="6">No records found</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-bordered mt-3">
+                        <thead>
+                            <tr>
+                                <th scope="col">Type</th>
+                                <th scope="col">Units</th>
+                                <th scope="col">Rate</th>
+                                <th scope="col">Value</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let investment of investmentLists | paginate: { id: 'pagination1', itemsPerPage: 5, currentPage: investmentPage };let i=index;">
+                                <td>{{investment.type}}</td>
+                                <td>{{investment.units}}</td>
+                                <td>{{investment.rate}}</td>
+                                <td>{{investment.value}}</td>
+                                <td [innerHtml]="getStatus(investment)"></td>
+                            </tr>
+                            <tr *ngIf="investmentLists.length==0" class="text-center">
+                                <td colspan="6">No records found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>                
                 <pagination-controls id="pagination1" (pageChange)="investmentPage = $event"></pagination-controls>
             </div>
         </div>
@@ -102,66 +107,72 @@
                         *ngIf="profileDetails&&profileDetails.id&&!isClient&&!loanFormGroup.value.id"
                         (click)="addLoan(loanForm)">Add Loan</button>
                 </div>
-                <table class="table table-bordered mt-3">
-                    <thead>
-                        <tr>
-                            <th scope="col">Loan Id</th>
-                            <th scope="col">Mobile</th>
-                            <th scope="col">Loan Date</th>
-                            <th scope="col">Loan Disbursed</th>
-                            <th scope="col">Renewal Date</th>
-                            <th scope="col">Prinicipal O/S</th>
-                            <th scope="col">No of Days</th>
-                            <th scope="col">Interst Amount</th>
-                            <th scope="col">Balance</th>
-                            <th scope="col">Status</th>
-                            <th scope="col" *ngIf="!isClient">Repayment</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let loan of loanLists | paginate: { id: 'pagination2', itemsPerPage: 5, currentPage: loanPage };let i=index;">
-                            <td>{{loan.id}}</td>
-                            <td>{{loan.mobile}}</td>
-                            <td>{{loan.date}}</td>
-                            <td>{{loan.disbursed}}</td>
-                            <td>{{loan.renewaldate}}</td>
-                            <td>{{loan.principle}}</td>
-                            <td [innerHtml]="getNumberofDays(loan.renewaldate, loan.status)"></td>
-                            <td [innerHtml]="getInterestAmount(loan)"></td>
-                            <td [innerHtml]="getBalance(loan)"></td>
-                            <td [innerHtml]="getStatus(loan)"></td>
-                            <td *ngIf="!isClient"><button class="btn btn-primary" (click)="openRepaymentModal(repaymentForm, loan)" *ngIf="loan.status==2">Repayment</button></td>
-                        </tr>
-                        <tr *ngIf="loanLists.length==0" class="text-center">
-                            <td colspan="12">No records found</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-bordered mt-3">
+                        <thead>
+                            <tr>
+                                <th scope="col">Loan Id</th>
+                                <th scope="col">Mobile</th>
+                                <th scope="col">Loan Date</th>
+                                <th scope="col">Loan Disbursed</th>
+                                <th scope="col">Renewal Date</th>
+                                <th scope="col">Prinicipal O/S</th>
+                                <th scope="col">No of Days</th>
+                                <th scope="col">Interst Amount</th>
+                                <th scope="col">Balance</th>
+                                <th scope="col">Status</th>
+                                <th scope="col" *ngIf="!isClient">Repayment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let loan of loanLists | paginate: { id: 'pagination2', itemsPerPage: 5, currentPage: loanPage };let i=index;">
+                                <td>{{loan.id}}</td>
+                                <td>{{loan.mobile}}</td>
+                                <td>{{loan.date}}</td>
+                                <td>{{loan.disbursed}}</td>
+                                <td>{{loan.renewaldate}}</td>
+                                <td>{{loan.principle}}</td>
+                                <td [innerHtml]="getNumberofDays(loan.renewaldate, loan.status)"></td>
+                                <td [innerHtml]="getInterestAmount(loan)"></td>
+                                <td [innerHtml]="getBalance(loan)"></td>
+                                <td [innerHtml]="getStatus(loan)"></td>
+                                <td *ngIf="!isClient"><button class="btn btn-primary" (click)="openRepaymentModal(repaymentForm, loan)" *ngIf="loan.status==2">Repayment</button></td>
+                            </tr>
+                            <tr *ngIf="loanLists.length==0" class="text-center">
+                                <td colspan="12">No records found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>                
                 <pagination-controls id="pagination2" (pageChange)="loanPage = $event"></pagination-controls>
             </div>
             <div class="col-lg-12" *ngIf="profileDetails&&profileDetails.id">
                 <h4><span>Repayment Details</span></h4>
-                <table class="table table-bordered mt-3">
-                    <thead>
-                        <tr>
-                            <th scope="col">Loan</th>
-                            <th scope="col">Amount</th>
-                            <th scope="col">Close</th>
-                            <th scope="col">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let pay of repayment | paginate: { id: 'pagination3', itemsPerPage: 5, currentPage: repaymentPage };let i=index;">
-                            <td>{{pay.loan_id}}</td>
-                            <td>{{pay.amount}}</td>
-                            <td [innerHtml]="getClose(pay)"></td>
-                            <td [innerHtml]="getStatus(pay)"></td>
-                        </tr>
-                        <tr *ngIf="repayment.length==0" class="text-center">
-                            <td colspan="5">No records found</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-bordered mt-3">
+                        <thead>
+                            <tr>
+                                <th scope="col">Loan</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Close</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let pay of repayment | paginate: { id: 'pagination3', itemsPerPage: 5, currentPage: repaymentPage };let i=index;">
+                                <td>{{pay.loan_id}}</td>
+                                <td>{{pay.amount}}</td>
+                                <td [innerHtml]="getClose(pay)"></td>
+                                <td>{{pay.updatedAt|date:'dd-MM-yyyy'}}</td>
+                                <td [innerHtml]="getStatus(pay)"></td>
+                            </tr>
+                            <tr *ngIf="repayment.length==0" class="text-center">
+                                <td colspan="5">No records found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>                
                 <pagination-controls id="pagination3" (pageChange)="repaymentPage = $event"></pagination-controls>
             </div>
         </div>
@@ -193,7 +204,7 @@
                 <div class="col-lg-3">
                     <div class="form-group">
                         <label>Value:</label>
-                        <input type="text" class="form-control" formControlName="value" appAcceptNumberOnly (keyup)="updateUnits()">
+                        <input type="text" class="form-control" formControlName="value" appAcceptNumberDecimalAmount (keyup)="updateUnits()">
                     </div>
                 </div>
                 <div class="col-lg-3">
@@ -263,14 +274,14 @@
                     <div class="form-group">
                         <label>Loan Disbursed:</label>
                         <input type="text" class="form-control" formControlName="disbursed"
-                            [attr.disabled]="isClient? true : null" (change)="changeDisbursed()" appAcceptNumberOnly>
+                            [attr.disabled]="isClient? true : null" (change)="changeDisbursed()" appAcceptNumberDecimalAmount>
                     </div>
                 </div>
                 <div class="col-lg-3">
                     <div class="form-group">
                         <label>Principal O/S:</label>
                         <input type="text" class="form-control" formControlName="principle"
-                            [attr.disabled]="true" appAcceptNumberOnly>
+                            [attr.disabled]="true" appAcceptNumberDecimalAmount>
                     </div>
                 </div>
                 <div class="col-lg-3">
@@ -327,7 +338,7 @@
                 <div class="col-lg-3">
                     <div class="form-group">
                         <label>Amount:</label>
-                        <input type="text" class="form-control" formControlName="amount" [attr.disabled]="(repaymentFormGroup.value.type=='Full Payment' ? true: null)" appAcceptNumberOnly>
+                        <input type="text" class="form-control" formControlName="amount" [attr.disabled]="(repaymentFormGroup.value.type=='Full Payment' ? true: null)" appAcceptNumberDecimalAmount>
                     </div>
                 </div>
                 <div class="col-lg-3">

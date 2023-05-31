@@ -28,6 +28,7 @@ import { LoansComponent } from './pages/loans/loans.component';
 import { FilterLoansPipe } from './pipes/filter-loans.pipe';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { AcceptNumberDecimalDirective } from './services/accept-number-decimal.directive';
+import { AcceptNumberDecimalAmountDirective } from './services/accept-number-decimal-amount.directive';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { AcceptNumberDecimalDirective } from './services/accept-number-decimal.d
     AcceptNumberOnlyDirective,
     LoansComponent,
     FilterLoansPipe,
-    AcceptNumberDecimalDirective
+    AcceptNumberDecimalDirective,
+    AcceptNumberDecimalAmountDirective
   ],
   imports: [
     BrowserModule,

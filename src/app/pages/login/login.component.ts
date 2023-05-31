@@ -13,12 +13,14 @@ export class LoginComponent implements OnInit {
 
   formGroup: any;
   showOtp: boolean = false;
+  resendButton: boolean = false;
+  seconds = 60;
   constructor(private http: HttpRequestService, private storage: StorageService, private router: Router) {
     let userDetails: any = this.storage.getUserDetails();
-    if(userDetails && (userDetails && userDetails.role)){
+    if (userDetails && (userDetails && userDetails.role)) {
       this.router.navigateByUrl("/portfolios");
     }
-   }
+  }
 
   ngOnInit(): void {
     this.formGroup = new FormGroup({
@@ -27,36 +29,70 @@ export class LoginComponent implements OnInit {
     })
   }
 
-  submit(){
-    if(this.showOtp){
+  submit() {
+    this.resendButton = false;
+    this.seconds = 60;
+    if (this.showOtp) {
       this.http.post('profile/loginwithotp', this.formGroup.value).subscribe(
-        (response: any)=>{
+        (response: any) => {
           this.storage.setUserDetails(response);
-          if(response.role){
+          if (response.role) {
             this.storage.setRole(response.role);
           }
           this.router.navigateByUrl("/portfolios");
-          setTimeout(()=>{
+          setTimeout(() => {
             location.reload();
-          })          
+          })
         },
-        (error: any)=>{
+        (error: any) => {
           this.http.exceptionHandling(error);
         }
       )
     }
-    else{
+    else {
       this.http.post('profile/login', this.formGroup.value).subscribe(
-        (response: any)=>{
+        (response: any) => {
           this.showOtp = true;
-          let obj = {otp: response};
-          this.formGroup.patchValue(obj);
+          setInterval(() => {
+            if (this.seconds > 0) {
+              this.seconds--;
+            }
+            else if(this.seconds == 0){
+              this.resendButton = true;
+            }
+          }, 1000)
+
+          // let obj = {otp: response};
+          // this.formGroup.patchValue(obj);
         },
-        (error: any)=>{
+        (error: any) => {
           this.http.exceptionHandling(error);
         }
       )
     }
+  }
+
+  resend() {
+    this.seconds = 60;
+    if (!((this.formGroup.invalid || (this.showOtp)) && !this.resendButton)) {
+      this.resendButton = false;
+      this.http.post('profile/login', this.formGroup.value).subscribe(
+        (response: any) => {
+          setInterval(() => {
+            if (this.seconds > 0) {
+              this.seconds--;
+            }
+            else if(this.seconds == 0){
+              this.resendButton = true;
+            }
+          }, 1000)
+        },
+        (error: any) => {
+          this.http.exceptionHandling(error);
+        }
+      )
+    }
+
   }
 
 }

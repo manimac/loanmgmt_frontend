@@ -33,29 +33,34 @@
                         <button class="btn btn-primary ms-4" (click)="create()">Create Profile</button>
                     </div>
                 </div>
-                <table class="table table-bordered mt-4">
-                    <thead>
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Mobile</th>
-                            <th scope="col">Role</th>
-                            <th scope="col">Payout</th>
-                            <th scope="col">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let profile of profileLists | paginate: { itemsPerPage: 10, currentPage: p };let i=index;">
-                            <td><a href="javascript:void(0);" (click)="viewElement(profile)">{{profile.name}}</a></td>
-                            <td>{{profile.mobile}}</td>
-                            <td>{{profile.role}}</td>
-                            <td>{{profile.nomineemobile}}</td>
-                            <td>{{profile.status==2?'Active':'In Active'}}</td>
-                        </tr>
-                        <tr *ngIf="profileLists.length==0" class="text-center">
-                            <td colspan="6">No records found</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-bordered mt-4">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Mobile</th>
+                                <th scope="col">Role</th>
+                                <th scope="col">Payout</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let profile of profileLists | paginate: { itemsPerPage: 10, currentPage: p };let i=index;">
+                                <td>
+                                    <a href="javascript:void(0);" (click)="viewElement(profile)" *ngIf="isAdmin">{{profile.name}}</a>
+                                    <span *ngIf="!isAdmin">{{profile.name}}</span>
+                                </td>
+                                <td>{{profile.mobile}}</td>
+                                <td>{{profile.role}}</td>
+                                <td>{{profile.nomineemobile}}</td>
+                                <td>{{profile.status==2?'Active':'In Active'}}</td>
+                            </tr>
+                            <tr *ngIf="profileLists.length==0" class="text-center">
+                                <td colspan="6">No records found</td>
+                            </tr>
+                        </tbody>
+                    </table>                    
+                </div>
                 <pagination-controls (pageChange)="p = $event"></pagination-controls>
             </div>
         </div>
@@ -137,7 +142,7 @@
                         <div class="col-lg-3">
                             <div class="form-group">
                                 <label>IFSC:</label>
-                                <input type="text" class="form-control" formControlName="ifsc" maxlength="12" (keypress)="alphaNumberOnly($event)" (paste)="onPaste($event)">
+                                <input type="text" class="form-control" formControlName="ifsc" maxlength="11" (keypress)="alphaNumberOnly($event)" (paste)="onPaste($event)">
                             </div>
                         </div>
                         <div class="col-lg-3">

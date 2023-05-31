@@ -1,3 +1,7 @@
 .qr-code{
     width: 100%;
 }
+.pr-pic{
+    width: 100%;
+    border-radius: 50%;
+}

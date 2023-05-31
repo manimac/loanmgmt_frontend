@@ -30,7 +30,7 @@
                                 </td>
                             </tr>
                             <tr *ngIf="approvalLists.length==0" class="text-center">
-                                <td colspan="4">No records found</td>
+                                <td colspan="5">No records found</td>
                             </tr>
                         </tbody>
                     </table>
@@ -57,6 +57,7 @@
                         <th scope="col">Unit Rate</th>
                         <th scope="col">Value</th>
                         <th scope="col">Type</th>
+                        <th scope="col">Payment Mode</th>
                         <th scope="col">Approve</th>
                         <th scope="col">Decline</th>
                     </tr>                 
@@ -67,6 +68,7 @@
                         <td>{{approveDetails.investment?.rate}}</td>
                         <td>{{approveDetails.investment?.value}}</td>
                         <td>{{approveDetails.investment?.type}}</td>
+                        <td class="text-capitalize">{{approveDetails.investment?.paymenttype}}</td>
                         <td><button class="btn btn-success" (click)="updateStatus(2)">Approve</button></td>
                         <td><button class="btn btn-danger" (click)="updateStatus(1)">Decline</button></td>
                     </tr>

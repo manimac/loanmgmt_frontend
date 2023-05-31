@@ -1,12 +1,12 @@
 import { Directive, ElementRef, HostListener } from '@angular/core';
 
 @Directive({
-  selector: '[appAcceptNumberDecimal]'
+  selector: '[appAcceptNumberDecimalAmount]'
 })
-export class AcceptNumberDecimalDirective {
+export class AcceptNumberDecimalAmountDirective {
 
   inputElement: HTMLElement;
-  private regex: RegExp = new RegExp(/^\d*\.?\d{0,4}$/g);
+  private regex: RegExp = new RegExp(/^\d*\.?\d{0,20}$/g);
   private specialKeys: Array<string> = ['Backspace', 'Tab', 'End', 'Home', '-', 'ArrowLeft', 'ArrowRight', 'Del', 'Delete'];
   constructor(private el: ElementRef) {
     this.inputElement = el.nativeElement;

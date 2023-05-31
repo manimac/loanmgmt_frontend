@@ -1,0 +1,15 @@
+.resend{
+    text-decoration: underline;
+    cursor: pointer;
+}
+.resend-disabled{
+    text-decoration: none;
+    color: #72a7ed;
+    cursor: default !important;
+}
+.resend-seconds{
+    padding: 10px;
+    border-radius: 50%;
+    background: #0d6efd;
+    color: #fff;
+}

@@ -16,117 +16,120 @@
                         <button (click)="search()" class="btn btn-primary">Search</button>
                     </div>
                 </div>
-                <table class="table table-bordered mt-4">
-                    <thead>
-                        <tr>
-                            <th scope="col"></th>
-                            <th scope="col">From</th>
-                            <th scope="col">To</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Date</td>
-                            <td>{{fromDate | date: 'dd-MM-yyyy'}}</td>
-                            <td>{{toDate | date: 'dd-MM-yyyy'}}</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>No of Trans</td>
-                            <td>Amount</td>
-                        </tr>
-                        <tr>
-                            <td>New Loans</td>
-                            <td>{{loanTable.newLoansTrans ? loanTable.newLoansTrans : 0}}</td>
-                            <td>{{loanTable.newLoansAmount ? loanTable.newLoansAmount : 0}}</td>
-                        </tr>
-                        <tr>
-                            <td>Loan Repayments</td>
-                            <td>{{loanTable.loanRepaymentsTrans ? loanTable.loanRepaymentsTrans : 0}}</td>
-                            <td>{{loanTable.loanRepaymentsAmount ? loanTable.loanRepaymentsAmount : 0}}</td>
-                        </tr>
-                        <tr>
-                            <td>Unit Purchased</td>
-                            <td>{{loanTable.unitPurchasedTrans ? loanTable.unitPurchasedTrans : 0}}</td>
-                            <td>{{loanTable.unitPurchasedAmount ? loanTable.unitPurchasedAmount : 0}}</td>
-                        </tr>
-                        <tr>
-                            <td>Unit Redeemed</td>
-                            <td>{{loanTable.unitRedeemedTrans ? loanTable.unitRedeemedTrans : 0}}</td>
-                            <td>{{loanTable.unitRedeemedAmount ? loanTable.unitRedeemedAmount : 0}}</td>
-                        </tr>
-                        <tr>
-                            <td>No of Active Loan</td>
-                            <td>{{loanTable.activeLoan ? loanTable.activeLoan : 0}}</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Active Loan Amount</td>
-                            <td>{{loanTable.activeLoanAmount ? loanTable.activeLoanAmount : 0}}</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Active Loan Interest</td>
-                            <td>{{loanTable.activeLoanInterest ? loanTable.activeLoanInterest : 0}}</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Total Loan + Int</td>
-                            <td>{{loanTable.totalLoanInterest ? loanTable.totalLoanInterest : 0}}</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Cash</td>
-                            <td [innerHtml]="getCash(loanTable)"></td>
-                            <td><button class="btn btn-primary" *ngIf="userRole=='Admin'" (click)="openModal(paymentform, 'cash')">Withdraw</button></td>
-                        </tr>
-                        <tr>
-                            <td>Bank</td>
-                            <td [innerHtml]="getBank(loanTable)"></td>
-                            <td><button class="btn btn-primary" *ngIf="userRole=='Admin'" (click)="openModal(paymentform, 'bank')">Deposit</button></td>
-                        </tr>
-                        <tr>
-                            <td>Net Asset</td>
-                            <td>{{loanTable.netAsset ? loanTable.netAsset : 0}}</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>No Of Overdue</td>
-                            <td>{{loanTable.noOfOverdue ? loanTable.noOfOverdue : 0}}</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Overdue Principle</td>
-                            <td>{{loanTable.overduePrinciple ? loanTable.overduePrinciple : 0}}</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Overdue Interest</td>
-                            <td>{{loanTable.overdueInterest ? loanTable.overdueInterest : 0}}</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Total Overdue Amount</td>
-                            <td>{{loanTable.totalOverdue ? loanTable.totalOverdue : 0}}</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>No of Investments</td>
-                            <td>{{loanTable.noOfInvestments ? loanTable.noOfInvestments : 0}}</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>No of Units</td>
-                            <td>{{loanTable.noOfUnits ? loanTable.noOfUnits : 0}}</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Unit Rate</td>
-                            <td>{{loanTable.unitRate ? loanTable.unitRate : 0}}</td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-bordered mt-4">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">From</th>
+                                <th scope="col">To</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Date</td>
+                                <td>{{fromDate | date: 'dd-MM-yyyy'}}</td>
+                                <td>{{toDate | date: 'dd-MM-yyyy'}}</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>No of Trans</td>
+                                <td>Amount</td>
+                            </tr>
+                            <tr>
+                                <td>New Loans</td>
+                                <td>{{loanTable.newLoansTrans ? loanTable.newLoansTrans : 0}}</td>
+                                <td>{{loanTable.newLoansAmount ? loanTable.newLoansAmount : 0}}</td>
+                            </tr>
+                            <tr>
+                                <td>Loan Repayments</td>
+                                <td>{{loanTable.loanRepaymentsTrans ? loanTable.loanRepaymentsTrans : 0}}</td>
+                                <td>{{loanTable.loanRepaymentsAmount ? loanTable.loanRepaymentsAmount : 0}}</td>
+                            </tr>
+                            <tr>
+                                <td>Unit Purchased</td>
+                                <td>{{loanTable.unitPurchasedTrans ? loanTable.unitPurchasedTrans : 0}}</td>
+                                <td>{{loanTable.unitPurchasedAmount ? loanTable.unitPurchasedAmount : 0}}</td>
+                            </tr>
+                            <tr>
+                                <td>Unit Redeemed</td>
+                                <td>{{loanTable.unitRedeemedTrans ? loanTable.unitRedeemedTrans : 0}}</td>
+                                <td>{{loanTable.unitRedeemedAmount ? loanTable.unitRedeemedAmount : 0}}</td>
+                            </tr>
+                            <tr>
+                                <td>No of Active Loan</td>
+                                <td>{{loanTable.activeLoan ? loanTable.activeLoan : 0}}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Active Loan Amount</td>
+                                <td>{{loanTable.activeLoanAmount ? loanTable.activeLoanAmount : 0}}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Active Loan Interest</td>
+                                <td>{{loanTable.activeLoanInterest ? loanTable.activeLoanInterest : 0}}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Total Loan + Int</td>
+                                <td>{{loanTable.totalLoanInterest ? loanTable.totalLoanInterest : 0}}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Cash</td>
+                                <td [innerHtml]="getCash(loanTable)"></td>
+                                <td><button class="btn btn-primary" *ngIf="userRole=='Admin'" (click)="openModal(paymentform, 'cash')">Withdraw</button></td>
+                            </tr>
+                            <tr>
+                                <td>Bank</td>
+                                <td [innerHtml]="getBank(loanTable)"></td>
+                                <td><button class="btn btn-primary" *ngIf="userRole=='Admin'" (click)="openModal(paymentform, 'bank')">Deposit</button></td>
+                            </tr>
+                            <tr>
+                                <td>Net Asset</td>
+                                <td>{{loanTable.netAsset ? loanTable.netAsset : 0}}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>No Of Overdue</td>
+                                <td>{{loanTable.noOfOverdue ? loanTable.noOfOverdue : 0}}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Overdue Principle</td>
+                                <td>{{loanTable.overduePrinciple ? loanTable.overduePrinciple : 0}}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Overdue Interest</td>
+                                <td>{{loanTable.overdueInterest ? loanTable.overdueInterest : 0}}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Total Overdue Amount</td>
+                                <td>{{loanTable.totalOverdue ? loanTable.totalOverdue : 0}}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>No of Investments</td>
+                                <td>{{loanTable.noOfInvestments ? loanTable.noOfInvestments : 0}}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>No of Units</td>
+                                <td>{{loanTable.noOfUnits ? loanTable.noOfUnits : 0}}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Unit Rate</td>
+                                <td>{{loanTable.unitRate ? loanTable.unitRate : 0}}</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
             </div>
         </div>
     </div>

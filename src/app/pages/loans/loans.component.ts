@@ -29,7 +29,7 @@ export class LoansComponent implements OnInit {
 
   loadData() {
     this.p = 1;
-    this.http.post('loan/filterlist', {mobile: this.mobile, status: this.status}).subscribe(
+    this.http.post('loan/filterlist', { mobile: this.mobile, status: this.status }).subscribe(
       (response: any) => {
         this.dataLists = response;
       }, (error: any) => {
@@ -82,18 +82,18 @@ export class LoansComponent implements OnInit {
     else if (loan.status == 1) {
       status = 'Declined';
     }
-    else if (loan.status == 2) {      
+    else if (loan.status == 2) {
       const today: any = new Date();
       const renewaldate: any = new Date(loan.renewaldate);
       const diffTime = Math.abs(today - renewaldate);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      if(diffDays > 180){
+      if (diffDays > 180) {
         status = 'Overdue';
       }
-      else if(diffDays > 150){
+      else if (diffDays > 150) {
         status = 'Due';
       }
-      else{
+      else {
         status = 'Active';
       }
     }
@@ -125,6 +125,17 @@ export class LoansComponent implements OnInit {
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'All Ind. Searched Data Export');
     XLSX.writeFile(wb, 'Loans.xlsx');
+  }
+
+  sendReminder() {
+    this.http.get('eventDueOverdue').subscribe(
+      (response: any) => {
+        this.http.successMessage("Sent successfully")
+        console.log(response)
+      }, (error: any) => {
+        this.http.exceptionHandling(error);
+      }
+    )
   }
 
 }

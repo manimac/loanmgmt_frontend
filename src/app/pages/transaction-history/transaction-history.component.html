@@ -16,37 +16,39 @@
                         <button (click)="loadData()" class="btn btn-primary">Search</button>
                     </div>
                 </div>
-                <table class="table table-bordered mt-3">
-                    <thead>
-                        <tr>
-                            <th scope="col">Date and Time</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Mobile</th>
-                            <th scope="col">Amount</th>
-                            <th scope="col">Particulars</th>
-                            <th scope="col">Rate</th>
-                            <th scope="col">Unit / Loan No</th>
-                            <th scope="col">Maker</th>
-                            <th scope="col">Checker</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let approval of approvalLists | paginate: { itemsPerPage: 10, currentPage: p };let i=index;">
-                            <td>{{approval.updatedAt|date:'medium'}}</td>
-                            <td>{{approval.profile?.name}}</td>
-                            <td>{{approval.profile?.mobile}}</td>
-                            <td [innerHtml]="getAmount(approval)"></td>
-                            <td [innerHtml]="getParticulars(approval)"></td>
-                            <td [innerHtml]="getRate(approval)"></td>
-                            <td [innerHtml]="getUnitsLoanNo(approval)"></td>
-                            <td>{{approval.maker?.name}} / {{approval.maker?.mobile}}</td>
-                            <td>{{approval.checker?.name}} / {{approval.checker?.mobile}}</td>
-                        </tr>
-                        <tr *ngIf="approvalLists.length==0" class="text-center">
-                            <td colspan="10">No records found</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-bordered mt-3">
+                        <thead>
+                            <tr>
+                                <th scope="col">Date and Time</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Mobile</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Particulars</th>
+                                <th scope="col">Rate</th>
+                                <th scope="col">Unit / Loan No</th>
+                                <th scope="col">Maker</th>
+                                <th scope="col">Checker</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let approval of approvalLists | paginate: { itemsPerPage: 10, currentPage: p };let i=index;">
+                                <td>{{approval.updatedAt|date:'medium'}}</td>
+                                <td>{{approval.profile?.name}}</td>
+                                <td>{{approval.profile?.mobile}}</td>
+                                <td [innerHtml]="getAmount(approval)"></td>
+                                <td [innerHtml]="getParticulars(approval)"></td>
+                                <td [innerHtml]="getRate(approval)"></td>
+                                <td [innerHtml]="getUnitsLoanNo(approval)"></td>
+                                <td>{{approval.maker?.name}} / {{approval.maker?.mobile}}</td>
+                                <td>{{approval.checker?.name}} / {{approval.checker?.mobile}}</td>
+                            </tr>
+                            <tr *ngIf="approvalLists.length==0" class="text-center">
+                                <td colspan="10">No records found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <pagination-controls (pageChange)="p = $event"></pagination-controls>
             </div>
         </div>
