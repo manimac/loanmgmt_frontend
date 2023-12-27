@@ -335,7 +335,7 @@ export class PortfoliosComponent implements OnInit {
       if (Difference_In_Days < 0) {
         Difference_In_Days = 1
       }
-      return Difference_In_Days ? Math.round(Difference_In_Days) : Difference_In_Days;
+      return Difference_In_Days ? Math.floor(Difference_In_Days) : Difference_In_Days;
     }
   }
 
