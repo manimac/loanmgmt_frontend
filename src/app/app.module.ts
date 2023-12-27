@@ -29,7 +29,7 @@ import { FilterLoansPipe } from './pipes/filter-loans.pipe';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { AcceptNumberDecimalDirective } from './services/accept-number-decimal.directive';
 import { AcceptNumberDecimalAmountDirective } from './services/accept-number-decimal-amount.directive';
-
+import {  TypeaheadModule  } from 'ngx-bootstrap/typeahead';
 @NgModule({
   declarations: [
     AppComponent,
@@ -61,7 +61,8 @@ import { AcceptNumberDecimalAmountDirective } from './services/accept-number-dec
     HttpClientModule,
     ToastrModule.forRoot(),
     ModalModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    TypeaheadModule.forRoot()
     // ToastrModule.forRoot({maxOpened: 1,
     //   progressBar: true,
     //   progressAnimation: 'decreasing',

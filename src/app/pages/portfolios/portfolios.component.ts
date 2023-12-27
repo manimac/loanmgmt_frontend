@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpRequestService } from 'src/app/services/http-request/http-request.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -35,12 +35,28 @@ export class PortfoliosComponent implements OnInit {
   investmentPage: number = 1;
   loanPage: number = 1;
   repaymentPage: number = 1;
-  paymentTypes: any = [];
-  constructor(private http: HttpRequestService, private storage: StorageService, private router: Router, private modalService: BsModalService) {
+  paymentTypes: any = [];listedMobiles: any = [];
+  filteredItems: string[] = [];
+
+  filterItems() {
+    this.filteredItems = this.listedMobiles.filter((item: any) =>
+      item.toLowerCase().includes(this.searchFormGroup.value.mobile.toLowerCase())
+    );
+  }
+
+  selectItem(item: string) {
+    let obj = {
+      mobile: item
+    }
+    this.searchFormGroup.patchValue(obj);
+    this.filteredItems = [];
+  }
+  constructor(private http: HttpRequestService, private storage: StorageService, private router: Router, private modalService: BsModalService, private route: ActivatedRoute) {
 
   }
 
   ngOnInit(): void {
+    
     this.loanFormGroup = new FormGroup({
       id: new FormControl(''),
       profile_id: new FormControl('', Validators.required),
@@ -132,6 +148,28 @@ export class PortfoliosComponent implements OnInit {
           this.reportData.unitRate = Number(this.reportData.unitRate).toFixed(4)
         }
         console.log(response);
+      });
+      this.http.post('loan/filterlistNumbers', {}).subscribe(
+        (response: any) => {
+          if (response) {
+            const mobileArray = response.map((item: any) => item.mobile);
+            this.listedMobiles = [...new Set(mobileArray)];
+            console.log(this.listedMobiles);
+          }
+        }, (error: any) => {
+          this.http.exceptionHandling(error);
+        }
+      )
+      this.route.queryParams.subscribe(params => {
+        // Access individual query parameters
+        const mobile = params['mobile'];
+        if(mobile){
+          let obj = {
+            mobile: mobile
+          }
+          this.searchFormGroup.patchValue(obj);
+          this.submit()
+        }
       });
   }
 

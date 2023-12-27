@@ -4,6 +4,9 @@ import { Router } from '@angular/router';
 import { HttpRequestService } from 'src/app/services/http-request/http-request.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import * as XLSX from 'xlsx';
+import { Observable, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+var $: any
 
 @Component({
   selector: 'app-profile',
@@ -21,6 +24,21 @@ export class ProfileComponent implements OnInit {
   mobile: any = ''
   roles: any = [];
   isAdmin: boolean = false;
+  listedMobiles: any = [];
+  filteredItems: string[] = [];
+
+  filterItems() {
+    this.filteredItems = this.listedMobiles.filter((item: any) =>
+      item.toLowerCase().includes(this.mobile.toLowerCase())
+    );
+  }
+
+  selectItem(item: string) {
+    this.mobile = item;
+    this.filteredItems = [];
+  }
+
+
   constructor(private http: HttpRequestService, private storage: StorageService, private router: Router) {
     let userRole: any = this.storage.getRole();
     if (userRole && (userRole == 'Client')) {
@@ -63,6 +81,18 @@ export class ProfileComponent implements OnInit {
     })
   }
 
+  ngAfterViewInit() {
+    // const autocompleteInput = document.getElementById('autocompleteInput');
+
+    // // Initialize the Bootstrap Typeahead
+    // $(autocompleteInput).typeahead({
+    //   source: this.listedMobiles,
+    //   minLength: 1, // Minimum characters to trigger autocomplete
+    //   highlight: true, // Highlight matches
+    //   autoSelect: true // Auto-select first match
+    // });
+  }
+
   create() {
     this.showForm = true;
     this.formGroup.reset();
@@ -81,9 +111,14 @@ export class ProfileComponent implements OnInit {
       (response: any) => {
         if (response && response.entries) {
           this.profileLists = response.entries;
-          const mobileArray = this.profileLists.map((item: any) => item.mobile);
-          const uniqueMobileArray = [...new Set(mobileArray)];
-          console.log(uniqueMobileArray);
+
+        }
+
+        if (response && response.mobiles) {
+          const mobileArray = response.mobiles.map((item: any) => item.mobile);
+          this.listedMobiles = [...new Set(mobileArray)];
+          console.log(this.listedMobiles);
+
         }
         if (response && response.investment) {
           this.profileLists.forEach((element: any) => {

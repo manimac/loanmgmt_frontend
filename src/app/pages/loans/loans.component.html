@@ -7,7 +7,11 @@
             <div class="col-lg-12 mt-2">
                 <div class="row">
                     <div class="col-lg-3">
-                        <input type="text" [(ngModel)]="mobile" class="form-control" placeholder="Mobile number" appAcceptNumberOnly maxlength="10">
+                        <!-- <input type="text" [(ngModel)]="mobile" class="form-control" placeholder="Mobile number" appAcceptNumberOnly maxlength="10"> -->
+                        <input type="text" class="form-control" [(ngModel)]="mobile" (input)="filterItems()" placeholder="Mobile number" appAcceptNumberOnly maxlength="10">
+                        <ul *ngIf="filteredItems.length > 0" class="autocom-mobile">
+                            <li *ngFor="let item of filteredItems" (click)="selectItem(item)">{{ item }}</li>
+                        </ul>
                     </div>
                     <div class="col-lg-3">
                         <select class="form-control" [(ngModel)]="status">
@@ -50,7 +54,7 @@
                             <tr *ngFor="let loan of dataLists | paginate: { itemsPerPage: 10, currentPage: p };let i=index;">
                                 <td>{{loan.id}}</td>
                                 <td>{{loan.Profile?.name}}</td>
-                                <td>{{loan.mobile}}</td>
+                                <td><a href="javascript:void(0);" routerLink="/portfolios" [queryParams]="{mobile: loan.mobile}">{{loan.mobile}}</a></td>
                                 <td>{{loan.date}}</td>
                                 <td>{{loan.disbursed}}</td>
                                 <td>{{loan.renewaldate}}</td>

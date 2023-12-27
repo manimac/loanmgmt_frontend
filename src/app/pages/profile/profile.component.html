@@ -11,7 +11,11 @@
             <div class="col-lg-12 mt-2">
                 <div class="row">
                     <div class="col-lg-2">
-                        <input type="text" [(ngModel)]="mobile" class="form-control" placeholder="Mobile number" appAcceptNumberOnly maxlength="10">
+                        <!-- <input type="text" [(ngModel)]="mobile" class="form-control" placeholder="Mobile number" appAcceptNumberOnly maxlength="10"> -->
+                        <input type="text" class="form-control" [(ngModel)]="mobile" (input)="filterItems()" placeholder="Mobile number" appAcceptNumberOnly maxlength="10">
+                        <ul *ngIf="filteredItems.length > 0" class="autocom-mobile">
+                            <li *ngFor="let item of filteredItems" (click)="selectItem(item)">{{ item }}</li>
+                        </ul>
                     </div>
                     <div class="col-lg-2">
                         <select class="form-control" [(ngModel)]="payout">
@@ -24,7 +28,7 @@
                         <select class="form-control" [(ngModel)]="status">
                             <option value="">Status</option>
                             <option value="2">Active</option>
-                                    <option value="0">In Active</option>
+                            <option value="0">In Active</option>
                         </select>
                     </div>
                     <div class="col-lg-6">
@@ -45,12 +49,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let profile of profileLists | paginate: { itemsPerPage: 10, currentPage: p };let i=index;">
+                            <tr
+                                *ngFor="let profile of profileLists | paginate: { itemsPerPage: 10, currentPage: p };let i=index;">
                                 <td>
-                                    <a href="javascript:void(0);" (click)="viewElement(profile)" *ngIf="isAdmin">{{profile.name}}</a>
+                                    <a href="javascript:void(0);" (click)="viewElement(profile)"
+                                        *ngIf="isAdmin">{{profile.name}}</a>
                                     <span *ngIf="!isAdmin">{{profile.name}}</span>
                                 </td>
-                                <td>{{profile.mobile}}</td>
+                                <td><a href="javascript:void(0);" routerLink="/portfolios" [queryParams]="{mobile: profile.mobile}">{{profile.mobile}}</a></td>
                                 <td>{{profile.role}}</td>
                                 <td>{{profile.nomineemobile}}</td>
                                 <td>{{profile.status==2?'Active':'In Active'}}</td>
@@ -59,7 +65,7 @@
                                 <td colspan="6">No records found</td>
                             </tr>
                         </tbody>
-                    </table>                    
+                    </table>
                 </div>
                 <pagination-controls (pageChange)="p = $event"></pagination-controls>
             </div>
@@ -78,7 +84,8 @@
                         <div class="col-lg-3">
                             <div class="form-group">
                                 <label>Mobile:</label>
-                                <input type="text" class="form-control" formControlName="mobile" [attr.disabled]="formGroup.value.id" appAcceptNumberOnly maxlength="10">
+                                <input type="text" class="form-control" formControlName="mobile"
+                                    [attr.disabled]="formGroup.value.id" appAcceptNumberOnly maxlength="10">
                             </div>
                         </div>
                         <div class="col-lg-3">
@@ -90,8 +97,8 @@
                         <div class="col-lg-3">
                             <div class="form-group">
                                 <label>Image:</label>
-                                <input type="file" class="form-control"  #thumbnail
-                                (change)="onThumbnailChange(thumbnail.files)">
+                                <input type="file" class="form-control" #thumbnail
+                                    (change)="onThumbnailChange(thumbnail.files)">
                             </div>
                         </div>
                         <div class="col-lg-3">
@@ -142,7 +149,8 @@
                         <div class="col-lg-3">
                             <div class="form-group">
                                 <label>IFSC:</label>
-                                <input type="text" class="form-control" formControlName="ifsc" maxlength="11" (keypress)="alphaNumberOnly($event)" (paste)="onPaste($event)">
+                                <input type="text" class="form-control" formControlName="ifsc" maxlength="11"
+                                    (keypress)="alphaNumberOnly($event)" (paste)="onPaste($event)">
                             </div>
                         </div>
                         <div class="col-lg-3">
@@ -163,11 +171,12 @@
                     </div>
                     <div class="row mt-4">
                         <div class="col-lg-4">
-                            <button type="submit" class="btn btn-primary" (click)="submit()" [disabled]="formGroup.invalid">Save</button>
+                            <button type="submit" class="btn btn-primary" (click)="submit()"
+                                [disabled]="formGroup.invalid">Save</button>
                             <button type="submit" class="btn btn-danger ms-3" (click)="cancel()">Cancel</button>
                         </div>
                     </div>
-                </form>                
+                </form>
             </div>
         </div>
     </div>

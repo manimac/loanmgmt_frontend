@@ -17,6 +17,19 @@ export class LoansComponent implements OnInit {
   status: any = '2';
   p: number = 1;
   isEnableAdminManagerAccess: boolean = false;
+  listedMobiles: any = [];
+  filteredItems: string[] = [];
+
+  filterItems() {
+    this.filteredItems = this.listedMobiles.filter((item: any) =>
+      item.toLowerCase().includes(this.mobile.toLowerCase())
+    );
+  }
+
+  selectItem(item: string) {
+    this.mobile = item;
+    this.filteredItems = [];
+  }
   constructor(private http: HttpRequestService, private storage: StorageService, private router: Router) {
     // let userRole: any = this.storage.getRole();
     // if (userRole && (userRole != 'Admin') && (userRole != 'Manager')) {
@@ -43,6 +56,17 @@ export class LoansComponent implements OnInit {
     this.http.post('loan/filterlist', { mobile: this.mobile, status: this.status }).subscribe(
       (response: any) => {
         this.dataLists = response;
+      }, (error: any) => {
+        this.http.exceptionHandling(error);
+      }
+    )
+    this.http.post('loan/filterlistNumbers', {}).subscribe(
+      (response: any) => {
+        if (response) {
+          const mobileArray = response.map((item: any) => item.mobile);
+          this.listedMobiles = [...new Set(mobileArray)];
+          console.log(this.listedMobiles);
+        }
       }, (error: any) => {
         this.http.exceptionHandling(error);
       }
