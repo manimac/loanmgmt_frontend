@@ -14,13 +14,24 @@ export class LoansComponent implements OnInit {
 
   dataLists: any = [];
   mobile: any = '';
-  status: any = '';
+  status: any = '2';
   p: number = 1;
+  isEnableAdminManagerAccess: boolean = false;
   constructor(private http: HttpRequestService, private storage: StorageService, private router: Router) {
-    let userRole: any = this.storage.getRole();
+    // let userRole: any = this.storage.getRole();
     // if (userRole && (userRole != 'Admin') && (userRole != 'Manager')) {
     //   this.router.navigateByUrl("/home");
     // }
+    let userDetails: any = this.storage.getUserDetails();
+    if (userDetails) {
+      let userRole = userDetails.role;
+      if (userRole == 'Admin' || userRole == 'Manager') {
+        this.isEnableAdminManagerAccess = true;
+      }
+      else {
+        this.isEnableAdminManagerAccess = false;
+      }
+    }
   }
 
   ngOnInit(): void {
@@ -71,7 +82,7 @@ export class LoansComponent implements OnInit {
 
   getBalance(loan: any) {
     let interestAmount: any = this.getInterestAmount(loan);
-    return parseFloat(loan.principle) + parseFloat(interestAmount);
+    return Number(parseFloat(loan.principle) + parseFloat(interestAmount)).toFixed(2);
   }
 
   getStatus(loan: any) {
@@ -136,6 +147,10 @@ export class LoansComponent implements OnInit {
         this.http.exceptionHandling(error);
       }
     )
+  }
+
+  getPrincipal(loan: any) {
+    return loan.principle ? Number(loan.principle).toFixed(2) : loan.principle;
   }
 
 }

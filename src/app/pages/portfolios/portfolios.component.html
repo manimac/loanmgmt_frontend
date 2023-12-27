@@ -75,7 +75,9 @@
                     <table class="table table-bordered mt-3">
                         <thead>
                             <tr>
+                                <th scope="col">T ID</th>
                                 <th scope="col">Type</th>
+                                <th scope="col">Date</th>
                                 <th scope="col">Units</th>
                                 <th scope="col">Rate</th>
                                 <th scope="col">Value</th>
@@ -84,7 +86,9 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let investment of investmentLists | paginate: { id: 'pagination1', itemsPerPage: 5, currentPage: investmentPage };let i=index;">
+                                <td>{{investment.id}}</td>
                                 <td>{{investment.type}}</td>
+                                <td>{{investment.createdAt|date:'dd-MM-yyyy'}}</td>
                                 <td>{{investment.units}}</td>
                                 <td>{{investment.rate}}</td>
                                 <td>{{investment.value}}</td>
@@ -120,8 +124,11 @@
                                 <th scope="col">No of Days</th>
                                 <th scope="col">Interst Amount</th>
                                 <th scope="col">Balance</th>
+                                <th scope="col">ROI</th>
                                 <th scope="col">Status</th>
                                 <th scope="col" *ngIf="!isClient">Repayment</th>
+                                <th scope="col">Remarks</th>
+                                <th scope="col">Description</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -131,12 +138,15 @@
                                 <td>{{loan.date}}</td>
                                 <td>{{loan.disbursed}}</td>
                                 <td>{{loan.renewaldate}}</td>
-                                <td>{{loan.principle}}</td>
+                                <td [innerHtml]="getPrincipal(loan)"></td>
                                 <td [innerHtml]="getNumberofDays(loan.renewaldate, loan.status)"></td>
                                 <td [innerHtml]="getInterestAmount(loan)"></td>
                                 <td [innerHtml]="getBalance(loan)"></td>
+                                <td>{{loan.rateofinterest}}%</td>
                                 <td [innerHtml]="getStatus(loan)"></td>
                                 <td *ngIf="!isClient"><button class="btn btn-primary" (click)="openRepaymentModal(repaymentForm, loan)" *ngIf="loan.status==2">Repayment</button></td>
+                                <td>{{loan.remarks}}</td>
+                                <td>{{loan.description}}</td>
                             </tr>
                             <tr *ngIf="loanLists.length==0" class="text-center">
                                 <td colspan="12">No records found</td>
@@ -152,19 +162,21 @@
                     <table class="table table-bordered mt-3">
                         <thead>
                             <tr>
+                                <th scope="col">T ID</th>
                                 <th scope="col">Loan</th>
+                                <th scope="col">Date</th>
                                 <th scope="col">Amount</th>
                                 <th scope="col">Close</th>
-                                <th scope="col">Date</th>
                                 <th scope="col">Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let pay of repayment | paginate: { id: 'pagination3', itemsPerPage: 5, currentPage: repaymentPage };let i=index;">
+                                <td>{{pay.id}}</td>
                                 <td>{{pay.loan_id}}</td>
-                                <td>{{pay.amount}}</td>
+                                <td>{{pay.createdAt|date:'dd-MM-yyyy'}}</td>
+                                <td [innerHtml]="getRepaymentAmt(pay)">{{pay.amount}}</td>
                                 <td [innerHtml]="getClose(pay)"></td>
-                                <td>{{pay.updatedAt|date:'dd-MM-yyyy'}}</td>
                                 <td [innerHtml]="getStatus(pay)"></td>
                             </tr>
                             <tr *ngIf="repayment.length==0" class="text-center">

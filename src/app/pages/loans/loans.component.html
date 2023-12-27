@@ -22,8 +22,8 @@
                     </div>
                     <div class="col-lg-6">
                         <button class="btn btn-primary" (click)="loadData()">Search</button>
-                        <button class="btn btn-primary ms-4" (click)="export()">Export</button>
-                        <button class="btn btn-primary ms-4" (click)="sendReminder()">Send Reminder</button>
+                        <button class="btn btn-primary ms-4" *ngIf="isEnableAdminManagerAccess" (click)="export()">Export</button>
+                        <button class="btn btn-primary ms-4" *ngIf="isEnableAdminManagerAccess" (click)="sendReminder()">Send Reminder</button>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -40,7 +40,10 @@
                                 <th scope="col">No of Days</th>
                                 <th scope="col">Interest Amount</th>
                                 <th scope="col">Balance</th>
+                                <th scope="col">ROI</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Remarks</th>
+                                <th scope="col">Description</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -51,12 +54,14 @@
                                 <td>{{loan.date}}</td>
                                 <td>{{loan.disbursed}}</td>
                                 <td>{{loan.renewaldate}}</td>
-                                <td>{{loan.principle}}</td>
+                                <td [innerHtml]="getPrincipal(loan)"></td>
                                 <td [innerHtml]="getNumberofDays(loan.renewaldate, loan.status)"></td>
                                 <td [innerHtml]="getInterestAmount(loan)"></td>
                                 <td [innerHtml]="getBalance(loan)"></td>
-                                <!-- <td>{{loan.loanstatus}}</td> -->
+                                <td>{{loan.rateofinterest}}%</td>
                                 <td [innerHtml]="getStatus(loan)"></td>
+                                <td>{{loan.remarks}}</td>
+                                <td>{{loan.description}}</td>
                             </tr>
                             <tr *ngIf="dataLists.length==0" class="text-center">
                                 <td colspan="12">No records found</td>

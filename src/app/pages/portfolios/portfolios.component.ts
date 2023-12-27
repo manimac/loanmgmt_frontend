@@ -285,7 +285,7 @@ export class PortfoliosComponent implements OnInit {
       status = 'Pending';
     }
     else if (loan.status == 1) {
-      status = 'Declined';
+      status = 'Rejected';
     }
     else if (loan.status == 2) {
       const today: any = new Date();
@@ -299,7 +299,7 @@ export class PortfoliosComponent implements OnInit {
         status = 'Due';
       }
       else{
-        status = 'Active';
+        status = 'Approved';
       }
     }
     else if (loan.status == 3) {
@@ -352,7 +352,7 @@ export class PortfoliosComponent implements OnInit {
 
   getBalance(loan: any) {
     let interestAmount: any = this.getInterestAmount(loan);
-    return parseFloat(loan.principle) + parseFloat(interestAmount);
+    return Number(parseFloat(loan.principle) + parseFloat(interestAmount)).toFixed(2);
   }
 
   openModal(template: TemplateRef<any>) {
@@ -411,14 +411,14 @@ export class PortfoliosComponent implements OnInit {
   }
 
   getAmt() {
-    let value: any = 0;
+    let value: any = '';
     let close: any = 0;
     if (this.repaymentFormGroup.value.type == 'Full Payment') {
       value = this.getBalance(this.selectedLoan);
       close = 1;
     }
     else {
-      value = this.getInterestAmount(this.selectedLoan);
+      // value = this.getInterestAmount(this.selectedLoan);
       close = 0;
     }
     let obj = {
@@ -489,6 +489,14 @@ export class PortfoliosComponent implements OnInit {
       data = Number(this.numberOfUnits) * Number(this.reportData.unitRate)
     }
     return data ? parseFloat(data).toFixed(4) : data;
+  }
+
+  getPrincipal(loan: any){
+    return loan.principle ? Number(loan.principle).toFixed(2): loan.principle;
+  }
+
+  getRepaymentAmt(data: any){
+    return data.amount ? Number(data.amount).toFixed(2): data.amount;
   }
 
 }

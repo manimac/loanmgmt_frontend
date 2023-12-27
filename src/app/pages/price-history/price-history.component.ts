@@ -15,6 +15,7 @@ export class PriceHistoryComponent implements OnInit {
   formGroup: any;
   dataLists: any = [];
   p: number = 1;
+  defaultDate: any = '';
   constructor(private http: HttpRequestService, private storage: StorageService, private router: Router) {
     let userRole: any = this.storage.getRole();
     // if (userRole && (userRole != 'Admin')) {
@@ -24,9 +25,14 @@ export class PriceHistoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
+    let today = new Date();
+    let year = today.getFullYear();
+    let month = String(today.getMonth() + 1).padStart(2, '0');
+    let day = String(today.getDate()).padStart(2, '0');
+    this.defaultDate = `${year}-${month}-${day}`;
     this.formGroup = new FormGroup({
       id: new FormControl(''),
-      date: new FormControl('', Validators.required),
+      date: new FormControl(this.defaultDate, Validators.required),
       value: new FormControl('', Validators.required)
     })
   }
@@ -36,6 +42,17 @@ export class PriceHistoryComponent implements OnInit {
   }
 
   loadData() {
+    this.http.post('report/list', { fromdate: this.defaultDate, todate: this.defaultDate }).subscribe(
+      (response: any) => {
+        if(response){
+          let obj = {
+            value: response.unitRate
+          };
+          this.formGroup.patchValue(obj);
+        }
+        
+        console.log(response);
+      });
     this.http.get('pricehistory/list').subscribe(
       (response: any) => {
         this.dataLists = response;

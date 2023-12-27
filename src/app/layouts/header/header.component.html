@@ -20,14 +20,14 @@
             <ul>
                 <li><a class="nav-link scrollto" href="javascript:void(0)" routerLink="/home" routerLinkActive="active" (click)="toggleNav()">Home</a></li>
                 <li *ngIf="isEnableStaffAccess"><a class="nav-link scrollto " href="#portfolio" routerLink="/profile" routerLinkActive="active" (click)="toggleNav()">Profiles</a></li>
-                <li *ngIf="isEnableAdminManagerAccess"><a class="nav-link scrollto " href="#portfolio" routerLink="/loans" routerLinkActive="active" (click)="toggleNav()">Loans</a></li>
+                <li *ngIf="isEnableAdminManagerAccess||isExecutiveAccess"><a class="nav-link scrollto " href="#portfolio" routerLink="/loans" routerLinkActive="active" (click)="toggleNav()">Loans</a></li>
                 <li *ngIf="isLoggedIn"><a class="nav-link scrollto " href="#portfolio" routerLink="/portfolios" routerLinkActive="active" (click)="toggleNav()">Portfolios</a></li>
                 <li *ngIf="isEnableAdminManagerAccess"><a class="nav-link scrollto" href="#team" routerLink="/approvals" routerLinkActive="active" (click)="toggleNav()">Approvals</a></li>
                 <li *ngIf="isEnableAdminManagerAccess"><a class="nav-link scrollto" href="#team" routerLink="/reports" routerLinkActive="active" (click)="toggleNav()">Reports</a></li>
-                <li class="dropdown" *ngIf="isEnableAdminManagerAccess"><a href="javascript:void(0)" (click)="togglechildNav()"><span>History</span> <i class="bi bi-chevron-down"></i></a>
+                <li class="dropdown" *ngIf="isEnableAdminManagerAccess||isExecutiveAccess"><a href="javascript:void(0)" (click)="togglechildNav()"><span>History</span> <i class="bi bi-chevron-down"></i></a>
                     <ul id="childnav">
                         <li><a href="javascript:void(0)" routerLink="/transaction-history" routerLinkActive="active" (click)="toggleNav()">Transaction History</a></li>
-                        <li><a href="javascript:void(0)" routerLink="/price-history" routerLinkActive="active" (click)="toggleNav()">Price History</a></li>
+                        <li *ngIf="isEnableAdminManagerAccess"><a href="javascript:void(0)" routerLink="/price-history" routerLinkActive="active" (click)="toggleNav()">Price History</a></li>
                     </ul>
                 </li>
                 <li *ngIf="!isLoggedIn"><a class="nav-link scrollto" href="#team" routerLink="/login" routerLinkActive="active">Login</a></li>

@@ -20,6 +20,7 @@
                     <table class="table table-bordered mt-3">
                         <thead>
                             <tr>
+                                <th scope="col">T ID</th>
                                 <th scope="col">Date and Time</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Mobile</th>
@@ -33,6 +34,7 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let approval of approvalLists | paginate: { itemsPerPage: 10, currentPage: p };let i=index;">
+                                <td [innerHtml]="getTransactionId(approval)"></td>
                                 <td>{{approval.updatedAt|date:'medium'}}</td>
                                 <td>{{approval.profile?.name}}</td>
                                 <td>{{approval.profile?.mobile}}</td>

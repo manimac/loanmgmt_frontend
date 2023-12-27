@@ -38,7 +38,7 @@ export class ProfileComponent implements OnInit {
     if (userRole && (userRole == 'Admin')) {
       this.isAdmin = true;
     }
-    else{
+    else {
       this.isAdmin = false;
     }
   }
@@ -81,6 +81,9 @@ export class ProfileComponent implements OnInit {
       (response: any) => {
         if (response && response.entries) {
           this.profileLists = response.entries;
+          const mobileArray = this.profileLists.map((item: any) => item.mobile);
+          const uniqueMobileArray = [...new Set(mobileArray)];
+          console.log(uniqueMobileArray);
         }
         if (response && response.investment) {
           this.profileLists.forEach((element: any) => {
@@ -101,7 +104,6 @@ export class ProfileComponent implements OnInit {
             element['units'] = parseFloat(element['units']).toFixed(2);
           })
         }
-        console.log(this.profileLists);
 
       }, (error: any) => {
         this.http.exceptionHandling(error);
@@ -129,7 +131,7 @@ export class ProfileComponent implements OnInit {
     var ageDifMs = Date.now() - birthday.getTime();
     var ageDate = new Date(ageDifMs); // miliseconds from epoch
     return Math.abs(ageDate.getUTCFullYear() - 1970);
-}
+  }
 
   submit() {
     var age = this._calculateAge(new Date(this.formGroup.value.dob));
@@ -179,7 +181,7 @@ export class ProfileComponent implements OnInit {
         }
       )
     }
-    
+
   }
 
   deleteElement(id: number) {

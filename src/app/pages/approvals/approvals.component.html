@@ -9,18 +9,32 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
+                                <th scope="col">T ID</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Mobile</th>
                                 <th scope="col">Type</th>
+                                <th scope="col">Date</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Update</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let approval of approvalLists | paginate: { itemsPerPage: 10, currentPage: p };let i=index;">
+                                <td>
+                                    <span *ngIf="approval.repaymenthistory">{{approval.repaymenthistory?.id}}</span>
+                                    <span *ngIf="approval.loanhistory">{{approval.loanhistory?.id}}</span>
+                                    <span *ngIf="approval.profilehistory && approval.profilehistory.createdAt">{{approval.profilehistory?.id}}</span>
+                                    <span *ngIf="approval.investment">{{approval.investment?.id}}</span>
+                                </td>
                                 <td>{{approval.profile?.name}}</td>
                                 <td>{{approval.profile?.mobile}}</td>
                                 <td>{{approval.type}}</td>
+                                <td>
+                                    <span *ngIf="approval.repaymenthistory">{{approval.repaymenthistory?.createdAt|date:'dd-MM-yyyy'}}</span>
+                                    <span *ngIf="approval.loanhistory">{{approval.loanhistory?.createdAt|date:'dd-MM-yyyy'}}</span>
+                                    <span *ngIf="approval.profilehistory && approval.profilehistory.createdAt">{{approval.profilehistory?.createdAt|date:'dd-MM-yyyy'}}</span>
+                                    <span *ngIf="approval.investment">{{approval.investment?.createdAt|date:'dd-MM-yyyy'}}</span>
+                                </td>
                                 <td [innerHtml]="getStatus(approval)"></td>
                                 <td>
                                     <button class="btn btn-info" (click)="openModal(investmentForm, approval.type, approval)" *ngIf="approval.type == 'Investment'">Update</button>
@@ -53,22 +67,26 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
+                        <th scope="col">T ID</th>
                         <th scope="col">Units</th>
                         <th scope="col">Unit Rate</th>
                         <th scope="col">Value</th>
                         <th scope="col">Type</th>
                         <th scope="col">Payment Mode</th>
+                        <th scope="col">Date</th>
                         <th scope="col">Approve</th>
                         <th scope="col">Decline</th>
                     </tr>                 
                 </thead>
                 <tbody>
                     <tr>
+                        <td>{{approveDetails.investment?.id}}</td>
                         <td>{{approveDetails.investment?.units}}</td>
                         <td>{{approveDetails.investment?.rate}}</td>
                         <td>{{approveDetails.investment?.value}}</td>
                         <td>{{approveDetails.investment?.type}}</td>
                         <td class="text-capitalize">{{approveDetails.investment?.paymenttype}}</td>
+                        <td>{{approveDetails.investment?.createdAt|date:'dd-MM-yyyy'}}</td>
                         <td><button class="btn btn-success" (click)="updateStatus(2)">Approve</button></td>
                         <td><button class="btn btn-danger" (click)="updateStatus(1)">Decline</button></td>
                     </tr>
@@ -90,6 +108,7 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
+                        <th scope="col">T ID</th>
                         <th scope="col">Name</th>
                         <th scope="col">Mobile</th>
                         <th scope="col">Father /Spouse Name</th>
@@ -106,6 +125,7 @@
                 </thead>
                 <tbody>
                     <tr>
+                        <td>{{approveDetails.profilehistory?.id}}</td>
                         <td>{{approveDetails.profilehistory?.name}}</td>
                         <td>{{approveDetails.profilehistory?.mobile}}</td>
                         <td>{{approveDetails.profilehistory?.fathername}}</td>
@@ -180,20 +200,24 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
+                        <th scope="col">T Id</th>
                         <th scope="col">Loan Id</th>
                         <th scope="col">Name</th>
                         <th scope="col">Amount</th>
                         <th scope="col">Payment Mode</th>
+                        <th scope="col">Date</th>
                         <th scope="col">Approve</th>
                         <th scope="col">Decline</th>
                     </tr>                 
                 </thead>
                 <tbody>
                     <tr>
+                        <td>{{approveDetails.repaymenthistory?.id}}</td>
                         <td>{{approveDetails.repaymenthistory?.loan_id}}</td>
                         <td>{{approveDetails.profile?.name}}</td>
                         <td>{{approveDetails.repaymenthistory?.amount}}</td>
                         <td class="text-capitalize">{{approveDetails.repaymenthistory?.paymenttype}}</td>
+                        <td>{{approveDetails.repaymenthistory?.createdAt|date:'dd-MM-yyyy'}}</td>
                         <td><button class="btn btn-success" (click)="updateStatus(2)">Approve</button></td>
                         <td><button class="btn btn-danger" (click)="updateStatus(1)">Decline</button></td>
                     </tr>

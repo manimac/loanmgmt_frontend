@@ -12,6 +12,7 @@ export class HeaderComponent implements OnInit {
   userDetails: any = {};
   userRole = '';
   isEnableStaffAccess: boolean = false;
+  isExecutiveAccess: boolean = false;
   isEnableCustomerAccess: boolean = false;
   isEnableAdminAccess: boolean = false;
   isEnableAdminManagerAccess: boolean = false;
@@ -130,6 +131,9 @@ export class HeaderComponent implements OnInit {
       }
       else {
         this.isEnableAdminManagerAccess = false;
+      }
+      if(this.userRole == 'Executive'){
+        this.isExecutiveAccess = true;
       }
       this.isLoggedIn = true;
     }

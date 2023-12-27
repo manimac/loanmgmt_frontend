@@ -95,6 +95,24 @@ export class TransactionHistoryComponent implements OnInit {
     }
   }
 
+  getTransactionId(approval: any){
+    if(approval.type == 'Investment'){
+        return approval.investment ? approval.investment.id : '';
+    }
+    else if(approval.type == 'Profile'){
+      return approval.profile ? approval.profile.id : '';
+    }
+    else if(approval.type == 'Repayment'){
+      return approval.repaymenthistory ? approval.repaymenthistory.id : '';
+    }
+    else if(approval.type == 'Loan'){
+      return approval.loanhistory ? approval.loanhistory.id : '';
+    }
+    else{
+      return '';
+    }
+  }
+
   getUnitsLoanNo(approval: any){
     let data: any = 0;
     if(approval.type == 'Profile'){
