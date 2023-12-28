@@ -68,6 +68,7 @@ export class TransactionHistoryComponent implements OnInit {
     this.http.post('loan/filterlistNumbers', {}).subscribe(
       (response: any) => {
         if (response) {
+          response = response.filter((el: any)=>(el.role!='Client'));
           const mobileArray = response.map((item: any) => item.mobile);
           this.listedMobiles = [...new Set(mobileArray)];
           console.log(this.listedMobiles);
