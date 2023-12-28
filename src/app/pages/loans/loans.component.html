@@ -52,7 +52,7 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let loan of dataLists | paginate: { itemsPerPage: 10, currentPage: p };let i=index;">
-                                <td>{{loan.id}}</td>
+                                <td><a href="javascript:void(0);" (click)="openRepaymentModal(historyForm, loan)">{{loan.id}}</a></td>
                                 <td>{{loan.Profile?.name}}</td>
                                 <td><a href="javascript:void(0);" routerLink="/portfolios" [queryParams]="{mobile: loan.mobile}">{{loan.mobile}}</a></td>
                                 <td>{{loan.date}}</td>
@@ -79,3 +79,87 @@
         </div>
     </div>
 </section>
+
+<ng-template #historyForm>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Loan Transactions</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body" *ngIf="selectedLoan">
+        <h5>Loan</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered mt-3">
+                <thead>
+                    <tr>
+                        <th scope="col">Loan Id</th>
+                        <th scope="col">Loan Name</th>
+                        <th scope="col">Mobile</th>
+                        <th scope="col">Loan Date</th>
+                        <th scope="col">Loan Disbursed</th>
+                        <th scope="col">Renewal Date</th>
+                        <th scope="col">Prinicipal O/S</th>
+                        <th scope="col">No of Days</th>
+                        <th scope="col">Interest Amount</th>
+                        <th scope="col">Balance</th>
+                        <th scope="col">ROI</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Remarks</th>
+                        <th scope="col">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{selectedLoan.id}}</td>
+                        <td>{{selectedLoan.Profile?.name}}</td>
+                        <td><a href="javascript:void(0);" routerLink="/portfolios" [queryParams]="{mobile: selectedLoan.mobile}">{{selectedLoan.mobile}}</a></td>
+                        <td>{{selectedLoan.date}}</td>
+                        <td>{{selectedLoan.disbursed}}</td>
+                        <td>{{selectedLoan.renewaldate}}</td>
+                        <td [innerHtml]="getPrincipal(selectedLoan)"></td>
+                        <td [innerHtml]="getNumberofDays(selectedLoan.renewaldate, selectedLoan.status)"></td>
+                        <td [innerHtml]="getInterestAmount(selectedLoan)"></td>
+                        <td [innerHtml]="getBalance(selectedLoan)"></td>
+                        <td>{{selectedLoan.rateofinterest}}%</td>
+                        <td [innerHtml]="getStatus(selectedLoan)"></td>
+                        <td>{{selectedLoan.remarks}}</td>
+                        <td>{{selectedLoan.description}}</td>
+                    </tr>
+                    <tr *ngIf="!selectedLoan" class="text-center">
+                        <td colspan="12">No records found</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h5 class="mt-2">Repayment Details</h5>
+        <div class="table-responsive repayment-list">
+            <table class="table table-bordered mt-3">
+                <thead>
+                    <tr>
+                        <th scope="col">T ID</th>
+                        <th scope="col">Loan</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Close</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let pay of selectedLoan.repaymenthistories">
+                        <td>{{pay.id}}</td>
+                        <td>{{pay.loan_id}}</td>
+                        <td>{{pay.createdAt|date:'dd-MM-yyyy'}}</td>
+                        <td [innerHtml]="getRepaymentAmt(pay)">{{pay.amount}}</td>
+                        <td [innerHtml]="getClose(pay)"></td>
+                        <td [innerHtml]="getStatus(pay)"></td>
+                    </tr>
+                    <tr *ngIf="!selectedLoan.repaymenthistories || (selectedLoan.repaymenthistories && selectedLoan.repaymenthistories.length==0)" class="text-center">
+                        <td colspan="5">No records found</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</ng-template>

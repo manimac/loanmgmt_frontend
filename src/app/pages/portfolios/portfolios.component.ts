@@ -30,6 +30,7 @@ export class PortfoliosComponent implements OnInit {
   unitsValue: any = 0;
   modalRef: any;
   selectedLoan: any;
+  selectedHistoryLoan: any;
   minPayment: any = 0;
   reportData: any;
   investmentPage: number = 1;
@@ -523,7 +524,7 @@ export class PortfoliosComponent implements OnInit {
 
   getcurrentValue(){
     let data: any = 0;
-    if(this.numberOfUnits && this.reportData.unitRate){
+    if(this.numberOfUnits && this.reportData && this.reportData.unitRate){
       data = Number(this.numberOfUnits) * Number(this.reportData.unitRate)
     }
     return data ? parseFloat(data).toFixed(4) : data;
@@ -535,6 +536,11 @@ export class PortfoliosComponent implements OnInit {
 
   getRepaymentAmt(data: any){
     return data.amount ? Number(data.amount).toFixed(2): data.amount;
+  }  
+
+  openHistoryFormModal(template: TemplateRef<any>, loan: any) {
+    this.selectedHistoryLoan = loan;
+    this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
   }
 
 }

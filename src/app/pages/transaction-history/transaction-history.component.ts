@@ -20,6 +20,21 @@ export class TransactionHistoryComponent implements OnInit {
   fromDate: any = ''
   toDate: any = ''
   p: number = 1;
+  mobile: any = '';
+  loanId: any = '';
+  listedMobiles: any = [];
+  filteredItems: string[] = [];
+
+  filterItems() {
+    this.filteredItems = this.listedMobiles.filter((item: any) =>
+      item.toLowerCase().includes(this.mobile.toLowerCase())
+    );
+  }
+
+  selectItem(item: string) {
+    this.mobile = item;
+    this.filteredItems = [];
+  }
   constructor(private http: HttpRequestService, private storage: StorageService, private router: Router) {
     let userRole: any = this.storage.getRole();
   }
@@ -40,13 +55,24 @@ export class TransactionHistoryComponent implements OnInit {
   }
 
   loadData() {
-    this.http.post('approval/filterlist', { fromdate: this.fromDate, todate: this.toDate }).subscribe(
+    this.http.post('approval/filterlist', { fromdate: this.fromDate, todate: this.toDate, loan: this.loanId, mobile: this.mobile }).subscribe(
       (response: any) => {
         if (response) {
           this.approvalLists = response;
         }
       },
       (error: any) => {
+        this.http.exceptionHandling(error);
+      }
+    )
+    this.http.post('loan/filterlistNumbers', {}).subscribe(
+      (response: any) => {
+        if (response) {
+          const mobileArray = response.map((item: any) => item.mobile);
+          this.listedMobiles = [...new Set(mobileArray)];
+          console.log(this.listedMobiles);
+        }
+      }, (error: any) => {
         this.http.exceptionHandling(error);
       }
     )

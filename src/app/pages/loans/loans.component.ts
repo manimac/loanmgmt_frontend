@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpRequestService } from 'src/app/services/http-request/http-request.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import * as XLSX from 'xlsx';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-loans',
@@ -19,6 +20,8 @@ export class LoansComponent implements OnInit {
   isEnableAdminManagerAccess: boolean = false;
   listedMobiles: any = [];
   filteredItems: string[] = [];
+  selectedLoan: any;
+  modalRef: any;
 
   filterItems() {
     this.filteredItems = this.listedMobiles.filter((item: any) =>
@@ -30,7 +33,7 @@ export class LoansComponent implements OnInit {
     this.mobile = item;
     this.filteredItems = [];
   }
-  constructor(private http: HttpRequestService, private storage: StorageService, private router: Router) {
+  constructor(private http: HttpRequestService, private storage: StorageService, private router: Router, private modalService: BsModalService) {
     // let userRole: any = this.storage.getRole();
     // if (userRole && (userRole != 'Admin') && (userRole != 'Manager')) {
     //   this.router.navigateByUrl("/home");
@@ -129,7 +132,7 @@ export class LoansComponent implements OnInit {
         status = 'Due';
       }
       else {
-        status = 'Active';
+        status = 'Approved';
       }
     }
     else if (loan.status == 3) {
@@ -175,6 +178,26 @@ export class LoansComponent implements OnInit {
 
   getPrincipal(loan: any) {
     return loan.principle ? Number(loan.principle).toFixed(2) : loan.principle;
+  }
+
+  openRepaymentModal(template: TemplateRef<any>, loan: any) {
+    this.selectedLoan = loan;
+    this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
+  }
+
+  getRepaymentAmt(data: any){
+    return data.amount ? Number(data.amount).toFixed(2): data.amount;
+  }
+
+  getClose(pay: any) {
+    let status = '';
+    if (pay.close == 1) {
+      status = 'Full Payment';
+    }
+    else {
+      status = 'Part Payment';
+    }
+    return status;
   }
 
 }

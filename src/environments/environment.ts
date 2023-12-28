@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  baseurl: 'https://madrastechnologies.com/loanmgmt/',
-  // baseurl: 'http://localhost:8080/loanmgmt/',
+  // baseurl: 'https://madrastechnologies.com/loanmgmt/',
+  baseurl: 'http://localhost:8080/loanmgmt/',
 };
 
 /*
