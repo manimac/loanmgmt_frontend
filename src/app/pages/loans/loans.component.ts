@@ -59,6 +59,13 @@ export class LoansComponent implements OnInit {
     this.http.post('loan/filterlist', { mobile: this.mobile, status: this.status }).subscribe(
       (response: any) => {
         this.dataLists = response;
+        if (this.dataLists && Array.isArray(this.dataLists) && this.dataLists.length > 0) {
+          this.dataLists = response.map((item: any) => {
+            item.repaymenthistories = item.repaymenthistories ? item.repaymenthistories.sort((a: any, b: any) => b.id - a.id) : item.repaymenthistories;
+            return item;
+          });
+        }
+
       }, (error: any) => {
         this.http.exceptionHandling(error);
       }
@@ -185,8 +192,8 @@ export class LoansComponent implements OnInit {
     this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
   }
 
-  getRepaymentAmt(data: any){
-    return data.amount ? Number(data.amount).toFixed(2): data.amount;
+  getRepaymentAmt(data: any) {
+    return data.amount ? Number(data.amount).toFixed(2) : data.amount;
   }
 
   getClose(pay: any) {

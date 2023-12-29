@@ -107,6 +107,12 @@ export class ProfileComponent implements OnInit {
 
   loadData() {
     this.p = 1;
+    if(this.mobile){
+      let str = this.mobile.split(" (");
+      if(str && Array.isArray(str) && str.length>0){
+        this.mobile = str[0];
+      }
+    }
     this.http.post('profile/filterlist', { mobile: this.mobile, status: this.status, payout: this.payout }).subscribe(
       (response: any) => {
         if (response && response.entries) {
@@ -115,7 +121,7 @@ export class ProfileComponent implements OnInit {
         }
 
         if (response && response.mobiles) {
-          const mobileArray = response.mobiles.map((item: any) => item.mobile);
+          const mobileArray = response.mobiles.map((item: any) => (item.mobile + " (" + item.name + ")"));
           this.listedMobiles = [...new Set(mobileArray)];
           console.log(this.listedMobiles);
 

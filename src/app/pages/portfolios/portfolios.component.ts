@@ -200,7 +200,13 @@ export class PortfoliosComponent implements OnInit {
           }
           else{
             this.loanLists = response.loans;
-          }          
+          }   
+          if (this.loanLists && Array.isArray(this.loanLists) && this.loanLists.length > 0) {
+            this.loanLists = this.loanLists.map((item: any) => {
+              item.repaymenthistories = item.repaymenthistories ? item.repaymenthistories.sort((a: any, b: any) => b.id - a.id) : item.repaymenthistories;
+              return item;
+            });
+          }       
         }
         if (response && response.repayment) {
           if(this.role == 'Client'){

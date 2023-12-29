@@ -10,9 +10,9 @@
             </div> -->
             <div class="col-lg-12 mt-2">
                 <div class="row">
-                    <div class="col-lg-2">
+                    <div class="col-lg-3">
                         <!-- <input type="text" [(ngModel)]="mobile" class="form-control" placeholder="Mobile number" appAcceptNumberOnly maxlength="10"> -->
-                        <input type="text" class="form-control" [(ngModel)]="mobile" (input)="filterItems()" placeholder="Mobile number" appAcceptNumberOnly maxlength="10">
+                        <input type="text" class="form-control" [(ngModel)]="mobile" (input)="filterItems()" placeholder="Mobile number">
                         <ul *ngIf="filteredItems.length > 0" class="autocom-mobile">
                             <li *ngFor="let item of filteredItems" (click)="selectItem(item)">{{ item }}</li>
                         </ul>
@@ -31,7 +31,7 @@
                             <option value="0">In Active</option>
                         </select>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-5">
                         <button class="btn btn-primary" (click)="loadData()">Search</button>
                         <button class="btn btn-primary ms-4" (click)="export()">Export</button>
                         <button class="btn btn-primary ms-4" (click)="create()">Create Profile</button>
