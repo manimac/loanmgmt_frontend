@@ -107,13 +107,14 @@ export class ProfileComponent implements OnInit {
 
   loadData() {
     this.p = 1;
+    let mobile = this.mobile;
     if(this.mobile){
       let str = this.mobile.split(" (");
       if(str && Array.isArray(str) && str.length>0){
-        this.mobile = str[0];
+        mobile = str[0];
       }
     }
-    this.http.post('profile/filterlist', { mobile: this.mobile, status: this.status, payout: this.payout }).subscribe(
+    this.http.post('profile/filterlist', { mobile: mobile, status: this.status, payout: this.payout }).subscribe(
       (response: any) => {
         if (response && response.entries) {
           this.profileLists = response.entries;
