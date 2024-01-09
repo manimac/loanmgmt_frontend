@@ -20,7 +20,15 @@
             <ul>
                 <li><a class="nav-link scrollto" href="javascript:void(0)" routerLink="/home" routerLinkActive="active" (click)="toggleNav()">Home</a></li>
                 <li *ngIf="isEnableStaffAccess"><a class="nav-link scrollto " href="#portfolio" routerLink="/profile" routerLinkActive="active" (click)="toggleNav()">Profiles</a></li>
-                <li *ngIf="isEnableAdminManagerAccess||isExecutiveAccess"><a class="nav-link scrollto " href="#portfolio" routerLink="/loans" routerLinkActive="active" (click)="toggleNav()">Loans</a></li>
+                <!-- <li *ngIf="isEnableAdminManagerAccess||isExecutiveAccess"><a class="nav-link scrollto " href="#portfolio" routerLink="/loans" routerLinkActive="active" (click)="toggleNav()">Loans</a></li> -->
+
+                <li class="dropdown" *ngIf="isEnableAdminManagerAccess||isExecutiveAccess"><a href="javascript:void(0)" (click)="togglechildNav()"><span>Products</span> <i class="bi bi-chevron-down"></i></a>
+                    <ul id="childnav">
+                        <li *ngIf="isEnableAdminManagerAccess||isExecutiveAccess"><a href="javascript:void(0)" routerLink="/loans" routerLinkActive="active" (click)="toggleNav()">Loans</a></li>
+                        <li *ngIf="isEnableAdminManagerAccess||isExecutiveAccess"><a href="javascript:void(0)" routerLink="/deposit" routerLinkActive="active" (click)="toggleNav()">Deposit</a></li>
+                    </ul>
+                </li>
+
                 <li *ngIf="isLoggedIn"><a class="nav-link scrollto " href="#portfolio" routerLink="/portfolios" routerLinkActive="active" (click)="toggleNav()">Portfolios</a></li>
                 <li *ngIf="isEnableAdminManagerAccess"><a class="nav-link scrollto" href="#team" routerLink="/approvals" routerLinkActive="active" (click)="toggleNav()">Approvals</a></li>
                 <li *ngIf="isEnableAdminManagerAccess"><a class="nav-link scrollto" href="#team" routerLink="/reports" routerLinkActive="active" (click)="toggleNav()">Reports</a></li>

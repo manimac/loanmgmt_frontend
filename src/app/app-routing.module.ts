@@ -11,6 +11,7 @@ import { TransactionHistoryComponent } from './pages/transaction-history/transac
 import { PriceHistoryComponent } from './pages/price-history/price-history.component';
 import { LoginComponent } from './pages/login/login.component';
 import { LoansComponent } from './pages/loans/loans.component';
+import { DepositComponent } from './pages/deposit/deposit.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'reports', component: ReportsComponent, canActivate: [AuthGuardService] },
   { path: 'transaction-history', component: TransactionHistoryComponent, canActivate: [AuthGuardService] },
   { path: 'price-history', component: PriceHistoryComponent, canActivate: [AuthGuardService] },
+  { path: 'deposit', component: DepositComponent, canActivate: [AuthGuardService] },
   { path: 'login', component: LoginComponent },
   { path: '**', component: HomeComponent }
 ];

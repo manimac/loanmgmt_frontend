@@ -207,5 +207,33 @@ export class TransactionHistoryComponent implements OnInit {
     return data;
   }
 
+  getTransactionStatus(approval: any){
+    let status: any = ''
+    if(approval.type == 'Investment'){
+      status = approval.investment ? approval.investment.status : '';
+    }
+    else if(approval.type == 'Profile'){
+      status = approval.profile ? approval.profile.status : '';
+    }
+    else if(approval.type == 'Repayment'){
+      status = approval.repaymenthistory ? approval.repaymenthistory.status : '';
+    }
+    else if(approval.type == 'Loan'){
+      status = approval.loanhistory ? approval.loanhistory.status : '';
+    }
+    else{
+      status = '';
+    }
+    if(status == 2){
+      return 'Approved';
+    }
+    else if(status == 1){
+      return 'Declined';
+    } 
+    else{
+      return 'Pending';
+    }
+  }
+
 }
 

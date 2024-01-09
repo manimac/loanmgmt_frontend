@@ -25,6 +25,7 @@
                                     <span *ngIf="approval.loanhistory">{{approval.loanhistory?.id}}</span>
                                     <span *ngIf="approval.profilehistory && approval.profilehistory.createdAt">{{approval.profilehistory?.id}}</span>
                                     <span *ngIf="approval.investment">{{approval.investment?.id}}</span>
+                                    <span *ngIf="approval.deposithistory">{{approval.deposithistory?.id}}</span>
                                 </td>
                                 <td>{{approval.profile?.name}}</td>
                                 <td>{{approval.profile?.mobile}}</td>
@@ -34,6 +35,7 @@
                                     <span *ngIf="approval.loanhistory">{{approval.loanhistory?.createdAt|date:'dd-MM-yyyy'}}</span>
                                     <span *ngIf="approval.profilehistory && approval.profilehistory.createdAt">{{approval.profilehistory?.createdAt|date:'dd-MM-yyyy'}}</span>
                                     <span *ngIf="approval.investment">{{approval.investment?.createdAt|date:'dd-MM-yyyy'}}</span>
+                                    <span *ngIf="approval.deposithistory">{{approval.deposithistory?.createdAt|date:'dd-MM-yyyy'}}</span>
                                 </td>
                                 <td [innerHtml]="getStatus(approval)"></td>
                                 <td>
@@ -41,6 +43,8 @@
                                     <button class="btn btn-info" (click)="openModal(profileForm, approval.type, approval)" *ngIf="approval.type == 'Profile'">Update</button>
                                     <button class="btn btn-info" (click)="openModal(loanForm, approval.type, approval)" *ngIf="approval.type == 'Loan'">Update</button>
                                     <button class="btn btn-info" (click)="openModal(repaymentForm, approval.type, approval)" *ngIf="approval.type == 'Repayment'">Update</button>
+                                    <button class="btn btn-info" (click)="openModal(depositForm, approval.type, approval)" *ngIf="approval.type == 'deposit' || approval.type == 'withdraw'">Update</button>
+                                    
                                 </td>
                             </tr>
                             <tr *ngIf="approvalLists.length==0" class="text-center">
@@ -218,6 +222,47 @@
                         <td>{{approveDetails.repaymenthistory?.amount}}</td>
                         <td class="text-capitalize">{{approveDetails.repaymenthistory?.paymenttype}}</td>
                         <td>{{approveDetails.repaymenthistory?.createdAt|date:'dd-MM-yyyy'}}</td>
+                        <td><button class="btn btn-success" (click)="updateStatus(2)">Approve</button></td>
+                        <td><button class="btn btn-danger" (click)="updateStatus(1)">Decline</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>        
+    </div>
+ </ng-template>
+
+ <ng-template #depositForm>
+    <div class="modal-header">
+       <h4 class="modal-title pull-left">Update Deposit</h4>
+       <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+          <span aria-hidden="true">×</span>
+       </button>
+    </div>
+    <div class="modal-body">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">Dep No</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">Dep Name</th>
+                        <th scope="col">Beneficiary</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Tenure</th>
+                        <th scope="col">Deposited</th>
+                        <th scope="col">Approve</th>
+                        <th scope="col">Decline</th>
+                    </tr>                 
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{approveDetails.deposithistory?.deposit?.number}}</td>
+                        <td>{{approveDetails.deposithistory?.createdAt|date:'dd-MM-yyyy'}}</td>
+                        <td>{{approveDetails.deposithistory?.deposit?.purpose}}</td>
+                        <td>{{approveDetails.deposithistory?.deposit?.beneficiaryname}}</td>
+                        <td class="text-capitalize">{{approveDetails.deposithistory?.deposit?.type}}</td>
+                        <td>{{approveDetails.deposithistory?.deposit?.tenure}}</td>
+                        <td>{{approveDetails.deposithistory?.value}}</td>
                         <td><button class="btn btn-success" (click)="updateStatus(2)">Approve</button></td>
                         <td><button class="btn btn-danger" (click)="updateStatus(1)">Decline</button></td>
                     </tr>

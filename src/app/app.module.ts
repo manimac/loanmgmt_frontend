@@ -30,6 +30,7 @@ import {NgxPaginationModule} from 'ngx-pagination';
 import { AcceptNumberDecimalDirective } from './services/accept-number-decimal.directive';
 import { AcceptNumberDecimalAmountDirective } from './services/accept-number-decimal-amount.directive';
 import {  TypeaheadModule  } from 'ngx-bootstrap/typeahead';
+import { DepositComponent } from './pages/deposit/deposit.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -49,7 +50,8 @@ import {  TypeaheadModule  } from 'ngx-bootstrap/typeahead';
     LoansComponent,
     FilterLoansPipe,
     AcceptNumberDecimalDirective,
-    AcceptNumberDecimalAmountDirective
+    AcceptNumberDecimalAmountDirective,
+    DepositComponent
   ],
   imports: [
     BrowserModule,

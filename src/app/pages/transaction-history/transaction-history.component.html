@@ -37,6 +37,7 @@
                                 <th scope="col">Unit / Loan No</th>
                                 <th scope="col">Maker</th>
                                 <th scope="col">Checker</th>
+                                <th scope="col">Status</th>
                                 <th scope="col">Approval Date & Time</th>
                             </tr>
                         </thead>
@@ -52,6 +53,7 @@
                                 <td [innerHtml]="getUnitsLoanNo(approval)"></td>
                                 <td>{{approval.maker?.name}} / {{approval.maker?.mobile}}</td>
                                 <td>{{approval.checker?.name}} / {{approval.checker?.mobile}}</td>
+                                <td [innerHtml]="getTransactionStatus(approval)"></td>
                                 <td>{{approval.updatedAt|date:'medium'}}</td>
                             </tr>
                             <tr *ngIf="approvalLists.length==0" class="text-center">

@@ -141,7 +141,8 @@
                         <tbody>
                             <tr
                                 *ngFor="let loan of loanLists | paginate: { id: 'pagination2', itemsPerPage: 5, currentPage: loanPage };let i=index;">
-                                <td><a href="javascript:void(0);" (click)="openHistoryFormModal(historyForm, loan)">{{loan.id}}</a></td>
+                                <td><a href="javascript:void(0);"
+                                        (click)="openHistoryFormModal(historyForm, loan)">{{loan.id}}</a></td>
                                 <td>{{loan.mobile}}</td>
                                 <td>{{loan.date}}</td>
                                 <td>{{loan.disbursed}}</td>
@@ -191,12 +192,70 @@
                                 <td [innerHtml]="getStatus(pay)"></td>
                             </tr>
                             <tr *ngIf="repayment.length==0" class="text-center">
-                                <td colspan="5">No records found</td>
+                                <td colspan="6">No records found</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
                 <pagination-controls id="pagination3" (pageChange)="repaymentPage = $event"></pagination-controls>
+            </div>
+
+
+            <div class="col-lg-12" *ngIf="profileDetails&&profileDetails.id">
+                <h4><span>Deposit Details</span></h4>
+                <div class="col-lg-12 text-end">
+                    <button class="btn btn-primary" *ngIf="!isClient"
+                        (click)="openDepositModal(depositForm)">Deposit</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered mt-3">
+                        <thead>
+                            <tr>
+                                <th scope="col">Dep No</th>
+                                <th scope="col">Start Date</th>
+                                <th scope="col">Dep Name</th>
+                                <th scope="col">Beneficiary</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Tenure</th>
+                                <th scope="col">Deposited</th>
+                                <th scope="col">No of Ins</th>
+                                <th scope="col">Withdrawn</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Closed Date</th>
+                                <th scope="col">Deposit</th>
+                                <th scope="col">Withdraw</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                *ngFor="let deposit of depositLists | paginate: { id: 'pagination5', itemsPerPage: 5, currentPage: depositPage };let i=index;">
+                                <td><a href="javascript:void(0);"
+                                        (click)="openDepositHistoryFormModal(deposithistoryForm, deposit)">{{deposit.number}}</a>
+                                </td>
+                                <td>{{deposit.createdAt|date:'dd-MM-yyyy'}}</td>
+                                <td>{{deposit.purpose}}</td>
+                                <td>{{deposit.beneficiaryname}}</td>
+                                <td>{{deposit.type}}</td>
+                                <td>{{deposit.tenure}}</td>
+                                <td>{{deposit.value}}</td>
+                                <td>1</td>
+                                <td>{{deposit.status==3? 'Yes' : 'No'}}</td>
+                                <td [innerHtml]="getDepositStatus(deposit)"></td>
+                                <td>{{deposit.status==3 ? (deposit.updatedAt|date:'dd-MM-yyyy') : ''}}</td>
+                                <td><button class="btn btn-primary"
+                                        (click)="openAddDepositModal(addDepositForm, deposit)"
+                                        *ngIf="deposit.type=='Monthly'&&deposit.status==2">D</button></td>
+                                <td><button class="btn btn-primary"
+                                        (click)="openAddWithdrawModal(addWithdrawForm, deposit)"
+                                        *ngIf="deposit.status==2">W</button></td>
+                            </tr>
+                            <tr *ngIf="depositLists.length==0" class="text-center">
+                                <td colspan="11">No records found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <pagination-controls id="pagination5" (pageChange)="depositPage = $event"></pagination-controls>
             </div>
         </div>
     </div>
@@ -424,12 +483,15 @@
                     <tr>
                         <td>{{selectedHistoryLoan.id}}</td>
                         <td>{{selectedHistoryLoan.Profile?.name}}</td>
-                        <td><a href="javascript:void(0);" routerLink="/portfolios" [queryParams]="{mobile: selectedHistoryLoan.mobile}">{{selectedHistoryLoan.mobile}}</a></td>
+                        <td><a href="javascript:void(0);" routerLink="/portfolios"
+                                [queryParams]="{mobile: selectedHistoryLoan.mobile}">{{selectedHistoryLoan.mobile}}</a>
+                        </td>
                         <td>{{selectedHistoryLoan.date}}</td>
                         <td>{{selectedHistoryLoan.disbursed}}</td>
                         <td>{{selectedHistoryLoan.renewaldate}}</td>
                         <td [innerHtml]="getPrincipal(selectedHistoryLoan)"></td>
-                        <td [innerHtml]="getNumberofDays(selectedHistoryLoan.renewaldate, selectedHistoryLoan.status)"></td>
+                        <td [innerHtml]="getNumberofDays(selectedHistoryLoan.renewaldate, selectedHistoryLoan.status)">
+                        </td>
                         <td [innerHtml]="getInterestAmount(selectedHistoryLoan)"></td>
                         <td [innerHtml]="getBalance(selectedHistoryLoan)"></td>
                         <td>{{selectedHistoryLoan.rateofinterest}}%</td>
@@ -457,8 +519,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
-                        *ngFor="let pay of selectedHistoryLoan.repaymenthistories">
+                    <tr *ngFor="let pay of selectedHistoryLoan.repaymenthistories">
                         <td>{{pay.id}}</td>
                         <td>{{pay.loan_id}}</td>
                         <td>{{pay.createdAt|date:'dd-MM-yyyy'}}</td>
@@ -466,7 +527,193 @@
                         <td [innerHtml]="getClose(pay)"></td>
                         <td [innerHtml]="getStatus(pay)"></td>
                     </tr>
-                    <tr *ngIf="!selectedHistoryLoan.repaymenthistories || (selectedHistoryLoan.repaymenthistories && selectedHistoryLoan.repaymenthistories.length==0)" class="text-center">
+                    <tr *ngIf="!selectedHistoryLoan.repaymenthistories || (selectedHistoryLoan.repaymenthistories && selectedHistoryLoan.repaymenthistories.length==0)"
+                        class="text-center">
+                        <td colspan="5">No records found</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</ng-template>
+
+
+<ng-template #depositForm>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Deposit</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="depositFormGroup">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Deposit Number:</label>
+                        <input type="text" class="form-control" formControlName="number" placeholder="Deposit Number">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Deposit Purpose:</label>
+                        <input type="text" class="form-control" formControlName="purpose" placeholder="Deposit Purpose">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Deposit Type</label>
+                        <select class="form-control" formControlName="type">
+                            <option value="" disabled>Select Type</option>
+                            <option value="Onetime">Onetime</option>
+                            <option value="Monthly">Monthly</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Beneficiary Name:</label>
+                        <input type="text" class="form-control" formControlName="beneficiaryname"
+                            placeholder="Beneficiary Name">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Ins. Amount:</label>
+                        <input type="text" class="form-control" formControlName="value" placeholder="Ins. Amount">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Tenure:</label>
+                        <input type="text" class="form-control" formControlName="tenure" placeholder="Tenure">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Payment Type:</label>
+                        <select class="form-control" formControlName="paymenttype">
+                            <option value="">Select Payment Type</option>
+                            <option value="cash">Cash</option>
+                            <option value="bank">Bank</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Description:</label>
+                        <input type="text" class="form-control" formControlName="description" placeholder="Description">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer" [formGroup]="depositFormGroup">
+        <button type="button" class="btn btn-primary" (click)="saveDeposit()"
+            [disabled]="depositFormGroup.invalid">Save</button>
+    </div>
+</ng-template>
+
+<ng-template #addDepositForm>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Deposit</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="addDepositFormGroup">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Amount:</label>
+                        <input type="text" class="form-control" formControlName="value" placeholder="Deposit Amount">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Payment Type:</label>
+                        <select class="form-control" formControlName="paymenttype">
+                            <option value="">Select Payment Type</option>
+                            <option value="cash">Cash</option>
+                            <option value="bank">Bank</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer" [formGroup]="addDepositFormGroup">
+        <button type="button" class="btn btn-primary" (click)="addDeposit()"
+            [disabled]="addDepositFormGroup.invalid">Save</button>
+    </div>
+</ng-template>
+
+<ng-template #addWithdrawForm>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Withdraw</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="addWithdrawFormGroup">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Amount:</label>
+                        <input type="text" class="form-control" formControlName="value" placeholder="Withdraw Amount"
+                            readonly>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Payment Type:</label>
+                        <select class="form-control" formControlName="paymenttype">
+                            <option value="">Select Payment Type</option>
+                            <option value="cash">Cash</option>
+                            <option value="bank">Bank</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer" [formGroup]="addWithdrawFormGroup">
+        <button type="button" class="btn btn-primary" (click)="addWithdraw()"
+            [disabled]="addWithdrawFormGroup.invalid">Save</button>
+    </div>
+</ng-template>
+
+<ng-template #deposithistoryForm>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Deposit Transactions</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body" *ngIf="selectedDepositHistory">
+        <h5>Loan</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered mt-3">
+                <thead>
+                    <tr>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Payment Type</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let deposit of selectedDepositHistory?.deposithistories">
+                        <td>{{deposit.value}}</td>
+                        <td class="text-capitalize">{{deposit.type}}</td>
+                        <td class="text-capitalize">{{deposit.paymenttype}}</td>
+                        <td [innerHtml]="getDepositStatus(deposit)"></td>
+                        <td>{{deposit.createdAt|date:'dd-MM-yyyy hh:mm'}}</td>
+                    </tr>
+                    <tr *ngIf="!selectedDepositHistory" class="text-center">
                         <td colspan="5">No records found</td>
                     </tr>
                 </tbody>

@@ -7,14 +7,15 @@ import * as XLSX from 'xlsx';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
-  selector: 'app-loans',
-  templateUrl: './loans.component.html',
-  styleUrls: ['./loans.component.css']
+  selector: 'app-deposit',
+  templateUrl: './deposit.component.html',
+  styleUrls: ['./deposit.component.css']
 })
-export class LoansComponent implements OnInit {
+export class DepositComponent implements OnInit {
 
-  dataLists: any = [];
+  depositLists: any = [];
   mobile: any = '';
+  beneficiary: any = '';
   status: any = '2';
   p: number = 1;
   isEnableAdminManagerAccess: boolean = false;
@@ -22,6 +23,7 @@ export class LoansComponent implements OnInit {
   filteredItems: string[] = [];
   selectedLoan: any;
   modalRef: any;
+  depositPage: number = 1;
 
   filterItems() {
     if (this.mobile) {
@@ -61,27 +63,9 @@ export class LoansComponent implements OnInit {
 
   loadData() {
     this.p = 1;
-    this.http.post('loan/filterlist', { mobile: this.mobile, status: this.status }).subscribe(
+    this.http.post('deposit/list', { mobile: this.mobile, status: this.status }).subscribe(
       (response: any) => {
-        this.dataLists = response;
-        if (this.dataLists && Array.isArray(this.dataLists) && this.dataLists.length > 0) {
-          this.dataLists = response.map((item: any) => {
-            item.repaymenthistories = item.repaymenthistories ? item.repaymenthistories.sort((a: any, b: any) => b.id - a.id) : item.repaymenthistories;
-            return item;
-          });
-        }
-
-      }, (error: any) => {
-        this.http.exceptionHandling(error);
-      }
-    )
-    this.http.post('loan/filterlistNumbers', {}).subscribe(
-      (response: any) => {
-        if (response) {
-          const mobileArray = response.map((item: any) => item.mobile);
-          this.listedMobiles = [...new Set(mobileArray)];
-          console.log(this.listedMobiles);
-        }
+        this.depositLists = response;
       }, (error: any) => {
         this.http.exceptionHandling(error);
       }
@@ -153,9 +137,27 @@ export class LoansComponent implements OnInit {
     return status;
   }
 
+  
+  getDepositStatus(data: any) {
+    let status = '';
+    if (data.status == 0) {
+      status = 'Pending';
+    }
+    else if (data.status == 1) {
+      status = 'Rejected';
+    }
+    else if (data.status == 2) {
+      status = 'Approved';
+    }
+    else if (data.status == 3) {
+      status = 'Closed';
+    }
+    return status;
+  }
+
   export() {
     let newArray: any[] = [];
-    let data: any = Object.values(this.dataLists);
+    let data: any = Object.values(this.depositLists);
     Object.keys(data).forEach((key: any, index: any) => {
       newArray.push({
         'Loan Id': data[key].id,

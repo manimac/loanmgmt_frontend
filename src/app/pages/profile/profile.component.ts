@@ -28,9 +28,14 @@ export class ProfileComponent implements OnInit {
   filteredItems: string[] = [];
 
   filterItems() {
-    this.filteredItems = this.listedMobiles.filter((item: any) =>
+    if(this.mobile){
+      this.filteredItems = this.listedMobiles.filter((item: any) =>
       item.toLowerCase().includes(this.mobile.toLowerCase())
     );
+    }
+    else{
+      this.filteredItems = [];
+    }    
   }
 
   selectItem(item: string) {

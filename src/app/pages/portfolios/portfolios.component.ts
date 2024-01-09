@@ -19,10 +19,14 @@ export class PortfoliosComponent implements OnInit {
   showLoanForm: boolean = false;
   showInvestmentForm: boolean = false;
   investmentFormGroup: any;
+  depositFormGroup: any;
+  addDepositFormGroup: any;
+  addWithdrawFormGroup: any;
   repaymentFormGroup: any;
   searchFormGroup: any;
   loanLists: any = []
-  investmentLists: any = []
+  investmentLists: any = [];
+  depositLists: any = [];
   repayment: any = []
   isClient: boolean = false;
   loanDetails: any = {};
@@ -31,18 +35,25 @@ export class PortfoliosComponent implements OnInit {
   modalRef: any;
   selectedLoan: any;
   selectedHistoryLoan: any;
+  selectedDepositHistory: any;
   minPayment: any = 0;
   reportData: any;
   investmentPage: number = 1;
+  depositPage: number = 1;
   loanPage: number = 1;
   repaymentPage: number = 1;
-  paymentTypes: any = [];listedMobiles: any = [];
+  paymentTypes: any = []; listedMobiles: any = [];
   filteredItems: string[] = [];
 
   filterItems() {
-    this.filteredItems = this.listedMobiles.filter((item: any) =>
-      item.toLowerCase().includes(this.searchFormGroup.value.mobile.toLowerCase())
-    );
+    if (this.searchFormGroup.value.mobile) {
+      this.filteredItems = this.listedMobiles.filter((item: any) =>
+        item.toLowerCase().includes(this.searchFormGroup.value.mobile.toLowerCase())
+      );
+    }
+    else {
+      this.filteredItems = [];
+    }
   }
 
   selectItem(item: string) {
@@ -57,7 +68,7 @@ export class PortfoliosComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+
     this.loanFormGroup = new FormGroup({
       id: new FormControl(''),
       profile_id: new FormControl('', Validators.required),
@@ -72,16 +83,46 @@ export class PortfoliosComponent implements OnInit {
       paymenttype: new FormControl('', Validators.required),
       status: new FormControl('Pending', Validators.required)
     }),
-      this.investmentFormGroup = new FormGroup({
-        id: new FormControl(''),
-        units: new FormControl('', Validators.required),
-        type: new FormControl('', Validators.required),
-        value: new FormControl('', Validators.required),
-        status: new FormControl(0, Validators.required),
-        rate: new FormControl(''),
-        paymenttype: new FormControl('', Validators.required),
-        profile_id: new FormControl('', Validators.required)
-      })
+    this.depositFormGroup = new FormGroup({
+      id: new FormControl(''),
+      number: new FormControl('', Validators.required),
+      purpose: new FormControl('', Validators.required),
+      type: new FormControl('', Validators.required),
+      deposittype: new FormControl('Deposit', Validators.required),
+      beneficiaryname: new FormControl('', Validators.required),
+      value: new FormControl('', Validators.required),
+      tenure: new FormControl('', Validators.required),
+      paymenttype: new FormControl('', Validators.required),
+      description: new FormControl('', Validators.required),
+      profile_id: new FormControl('', Validators.required),
+      status: new FormControl(0, Validators.required),
+    })
+    this.addDepositFormGroup = new FormGroup({
+      deposit_id: new FormControl('', Validators.required),
+      value: new FormControl('', Validators.required),
+      paymenttype: new FormControl('', Validators.required),
+      profile_id: new FormControl('', Validators.required),
+      type: new FormControl('deposit', Validators.required),
+      status: new FormControl(0)
+    })
+    this.addWithdrawFormGroup = new FormGroup({
+      deposit_id: new FormControl('', Validators.required),
+      value: new FormControl('', Validators.required),
+      paymenttype: new FormControl('', Validators.required),
+      profile_id: new FormControl('', Validators.required),
+      type: new FormControl('withdraw', Validators.required),
+      status: new FormControl(0)
+    })
+    this.investmentFormGroup = new FormGroup({
+      id: new FormControl(''),
+      units: new FormControl('', Validators.required),
+      type: new FormControl('', Validators.required),
+      value: new FormControl('', Validators.required),
+      status: new FormControl(0, Validators.required),
+      rate: new FormControl(''),
+      paymenttype: new FormControl('', Validators.required),
+      profile_id: new FormControl('', Validators.required)
+    })
     this.repaymentFormGroup = new FormGroup({
       id: new FormControl(''),
       amount: new FormControl('', [Validators.required, Validators.min(this.minPayment)]),
@@ -110,23 +151,23 @@ export class PortfoliosComponent implements OnInit {
       this.isClient = false;
     }
 
-    if(this.role == 'Admin'){
+    if (this.role == 'Admin') {
       this.paymentTypes = [{
         label: 'Cash',
         value: 'cash',
-      },{
+      }, {
         label: 'Bank',
         value: 'bank',
-      },{
+      }, {
         label: 'AMC',
         value: 'amc',
       }]
     }
-    else{
+    else {
       this.paymentTypes = [{
         label: 'Cash',
         value: 'cash',
-      },{
+      }, {
         label: 'Bank',
         value: 'bank',
       }]
@@ -145,33 +186,33 @@ export class PortfoliosComponent implements OnInit {
     this.http.post('report/list', { fromdate: formattedToday, todate: formattedToday }).subscribe(
       (response: any) => {
         this.reportData = response;
-        if(this.reportData.unitRate){
+        if (this.reportData.unitRate) {
           this.reportData.unitRate = Number(this.reportData.unitRate).toFixed(4)
         }
         console.log(response);
       });
-      this.http.post('loan/filterlistNumbers', {}).subscribe(
-        (response: any) => {
-          if (response) {
-            const mobileArray = response.map((item: any) => item.mobile);
-            this.listedMobiles = [...new Set(mobileArray)];
-            console.log(this.listedMobiles);
-          }
-        }, (error: any) => {
-          this.http.exceptionHandling(error);
+    this.http.post('loan/filterlistNumbers', {}).subscribe(
+      (response: any) => {
+        if (response) {
+          const mobileArray = response.map((item: any) => item.mobile);
+          this.listedMobiles = [...new Set(mobileArray)];
+          console.log(this.listedMobiles);
         }
-      )
-      this.route.queryParams.subscribe(params => {
-        // Access individual query parameters
-        const mobile = params['mobile'];
-        if(mobile){
-          let obj = {
-            mobile: mobile
-          }
-          this.searchFormGroup.patchValue(obj);
-          this.submit()
+      }, (error: any) => {
+        this.http.exceptionHandling(error);
+      }
+    )
+    this.route.queryParams.subscribe(params => {
+      // Access individual query parameters
+      const mobile = params['mobile'];
+      if (mobile) {
+        let obj = {
+          mobile: mobile
         }
-      });
+        this.searchFormGroup.patchValue(obj);
+        this.submit()
+      }
+    });
   }
 
   submit() {
@@ -181,9 +222,11 @@ export class PortfoliosComponent implements OnInit {
     this.loanLists = [];
     this.repayment = [];
     this.investmentLists = [];
+    this.depositLists = [];
     this.numberOfUnits = 0;
     this.unitsValue = 0;
     this.investmentPage = 1;
+    this.depositPage = 1;
     this.loanPage = 1;
     this.repaymentPage = 1;
     this.http.post('profile/search', { mobile: this.searchFormGroup.value.mobile, role: this.role }).subscribe(
@@ -192,43 +235,44 @@ export class PortfoliosComponent implements OnInit {
           this.profileDetails = response.profile;
           let obj = { profile_id: this.profileDetails.id };
           this.investmentFormGroup.patchValue(obj)
+          this.depositFormGroup.patchValue(obj)
           this.showForm = true;
         }
         if (response && response.loans) {
-          if(this.role == 'Client'){
-            this.loanLists = response.loans.filter((element: any)=>(element.status!=1));
+          if (this.role == 'Client') {
+            this.loanLists = response.loans.filter((element: any) => (element.status != 1));
           }
-          else{
+          else {
             this.loanLists = response.loans;
-          }   
+          }
           if (this.loanLists && Array.isArray(this.loanLists) && this.loanLists.length > 0) {
             this.loanLists = this.loanLists.map((item: any) => {
               item.repaymenthistories = item.repaymenthistories ? item.repaymenthistories.sort((a: any, b: any) => b.id - a.id) : item.repaymenthistories;
               return item;
             });
-          }       
+          }
         }
         if (response && response.repayment) {
-          if(this.role == 'Client'){
-            this.repayment = response.repayment.filter((element: any)=>(element.status!=1));
+          if (this.role == 'Client') {
+            this.repayment = response.repayment.filter((element: any) => (element.status != 1));
           }
-          else{
+          else {
             this.repayment = response.repayment;
           }
         }
         if (response && response.investment) {
-          if(this.role == 'Client'){
-            this.investmentLists = response.investment.filter((element: any)=>(element.status!=1));
+          if (this.role == 'Client') {
+            this.investmentLists = response.investment.filter((element: any) => (element.status != 1));
           }
-          else{
+          else {
             this.investmentLists = response.investment;
           }
           // this.investmentLists = response.investment;
           this.numberOfUnits = 0;
           this.unitsValue = 0;
           this.investmentLists.forEach((element: any) => {
-            if (element.status == 2) {   
-              element.units = parseFloat(element.units).toFixed(4);           
+            if (element.status == 2) {
+              element.units = parseFloat(element.units).toFixed(4);
               if (element.type == 'Redeem') {
                 this.unitsValue = this.unitsValue - Number(element.value);
                 this.numberOfUnits = this.numberOfUnits - Number(element.units);
@@ -238,8 +282,18 @@ export class PortfoliosComponent implements OnInit {
                 this.numberOfUnits = this.numberOfUnits + Number(element.units);
               }
             }
-          });          
+          });
           this.numberOfUnits = parseFloat(this.numberOfUnits).toFixed(4);
+        }
+
+
+        if (response && response.deposit) {
+          if (this.role == 'Client') {
+            this.depositLists = response.deposit.filter((element: any) => (element.status != 1));
+          }
+          else {
+            this.depositLists = response.deposit;
+          }
         }
       },
       (error: any) => {
@@ -337,17 +391,35 @@ export class PortfoliosComponent implements OnInit {
       const renewaldate: any = new Date(loan.renewaldate);
       const diffTime = Math.abs(today - renewaldate);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      if(diffDays > 180){
+      if (diffDays > 180) {
         status = 'Overdue';
       }
-      else if(diffDays > 150){
+      else if (diffDays > 150) {
         status = 'Due';
       }
-      else{
+      else {
         status = 'Approved';
       }
     }
     else if (loan.status == 3) {
+      status = 'Closed';
+    }
+    return status;
+  }
+
+  
+  getDepositStatus(data: any) {
+    let status = '';
+    if (data.status == 0) {
+      status = 'Pending';
+    }
+    else if (data.status == 1) {
+      status = 'Rejected';
+    }
+    else if (data.status == 2) {
+      status = 'Approved';
+    }
+    else if (data.status == 3) {
       status = 'Closed';
     }
     return status;
@@ -390,7 +462,7 @@ export class PortfoliosComponent implements OnInit {
     }
     else {
       let days: any = this.getNumberofDays(loan.renewaldate, loan.status);
-      let interestAmount = (loan.principle> 0) ? ((loan.principle * ((loan.rateofinterest) / 100)) / 365) * days : 0
+      let interestAmount = (loan.principle > 0) ? ((loan.principle * ((loan.rateofinterest) / 100)) / 365) * days : 0
       return interestAmount ? interestAmount.toFixed(2) : 0;
     }
   }
@@ -410,6 +482,15 @@ export class PortfoliosComponent implements OnInit {
     this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
   }
 
+  openDepositModal(template: TemplateRef<any>) {
+    let obj = {
+      status: 0,
+      profile_id: this.profileDetails.id
+    }
+    this.depositFormGroup.patchValue(obj);
+    this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
+  }
+
   openLoanModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
   }
@@ -426,12 +507,12 @@ export class PortfoliosComponent implements OnInit {
     this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
   }
 
-  getToday(){
+  getToday() {
     return new Date().toISOString().split('T')[0]
   }
 
   saveInvestment() {
-    if(this.investmentFormGroup.value.type !='Purchase'){
+    if (this.investmentFormGroup.value.type != 'Purchase') {
       this.investmentFormGroup.value.type = 'Redeem';
     }
     if ((this.investmentFormGroup.value.type == 'Purchase') || ((this.investmentFormGroup.value.type == 'Redeem') && (Number(this.numberOfUnits) >= Number(this.investmentFormGroup.value.units)))) {
@@ -519,33 +600,113 @@ export class PortfoliosComponent implements OnInit {
     }
   }
 
-  updateRedemption(){
-    if(this.investmentFormGroup.value.type == 'Full Redemption'){
+  updateRedemption() {
+    if (this.investmentFormGroup.value.type == 'Full Redemption') {
       let value = (this.numberOfUnits && this.reportData.unitRate) ? Number(this.numberOfUnits) * Number(this.reportData.unitRate) : 0;
-      let obj = {units: this.numberOfUnits, value: value};
+      let obj = { units: this.numberOfUnits, value: value };
       this.investmentFormGroup.patchValue(obj);
       this.updateUnits()
     }
   }
 
-  getcurrentValue(){
+  getcurrentValue() {
     let data: any = 0;
-    if(this.numberOfUnits && this.reportData && this.reportData.unitRate){
+    if (this.numberOfUnits && this.reportData && this.reportData.unitRate) {
       data = Number(this.numberOfUnits) * Number(this.reportData.unitRate)
     }
     return data ? parseFloat(data).toFixed(4) : data;
   }
 
-  getPrincipal(loan: any){
-    return loan.principle ? Number(loan.principle).toFixed(2): loan.principle;
+  getPrincipal(loan: any) {
+    return loan.principle ? Number(loan.principle).toFixed(2) : loan.principle;
   }
 
-  getRepaymentAmt(data: any){
-    return data.amount ? Number(data.amount).toFixed(2): data.amount;
-  }  
+  getRepaymentAmt(data: any) {
+    return data.amount ? Number(data.amount).toFixed(2) : data.amount;
+  }
 
   openHistoryFormModal(template: TemplateRef<any>, loan: any) {
     this.selectedHistoryLoan = loan;
+    this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
+  }
+
+  saveDeposit() {
+    // if ((this.depositFormGroup.value.type == 'Purchase') || ((this.depositFormGroup.value.type == 'Redeem') && (Number(this.numberOfUnits) >= Number(this.investmentFormGroup.value.units)))) {
+    let userId = this.storage.getUserId();
+    this.depositFormGroup.value['maker_id'] = userId;
+    this.http.post('deposit/create', this.depositFormGroup.value).subscribe(
+      (response: any) => {
+        this.http.successMessage('Deposit added');
+        this.modalRef.hide()
+        this.depositFormGroup.reset()
+        this.submit()
+      },
+      (error: any) => {
+        this.http.exceptionHandling(error);
+      }
+    )
+    // }
+    // else {
+    //   this.http.errorMessage('Please redeem with in your current value');
+    // }
+
+  }  
+
+  openAddDepositModal(template: TemplateRef<any>, data: any) {
+    let obj = {
+      status: 0,
+      profile_id: this.profileDetails.id,
+      deposit_id: data.id
+    }
+    this.addDepositFormGroup.patchValue(obj);
+    this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
+  }
+
+  addDeposit() {
+    let userId = this.storage.getUserId();
+    this.addDepositFormGroup.value['maker_id'] = userId;
+    this.http.post('deposithistory/create', this.addDepositFormGroup.value).subscribe(
+      (response: any) => {
+        this.http.successMessage('Deposit added');
+        this.modalRef.hide()
+        this.depositFormGroup.reset()
+        this.submit()
+      },
+      (error: any) => {
+        this.http.exceptionHandling(error);
+      }
+    )
+  }
+
+  openAddWithdrawModal(template: TemplateRef<any>, data: any) {
+    let obj = {
+      status: 0,
+      profile_id: this.profileDetails.id,
+      deposit_id: data.id,
+      value: data.value,
+    }
+    this.addWithdrawFormGroup.patchValue(obj);
+    this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
+  }
+
+  addWithdraw() {
+    let userId = this.storage.getUserId();
+    this.addWithdrawFormGroup.value['maker_id'] = userId;
+    this.http.post('deposithistory/create', this.addWithdrawFormGroup.value).subscribe(
+      (response: any) => {
+        this.http.successMessage('Withdraw updated');
+        this.modalRef.hide()
+        this.depositFormGroup.reset()
+        this.submit()
+      },
+      (error: any) => {
+        this.http.exceptionHandling(error);
+      }
+    )
+  }
+
+  openDepositHistoryFormModal(template: TemplateRef<any>, loan: any) {
+    this.selectedDepositHistory = loan;
     this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
   }
 
