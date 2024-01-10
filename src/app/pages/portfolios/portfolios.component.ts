@@ -85,7 +85,6 @@ export class PortfoliosComponent implements OnInit {
     }),
     this.depositFormGroup = new FormGroup({
       id: new FormControl(''),
-      number: new FormControl('', Validators.required),
       purpose: new FormControl('', Validators.required),
       type: new FormControl('', Validators.required),
       deposittype: new FormControl('Deposit', Validators.required),
@@ -656,7 +655,8 @@ export class PortfoliosComponent implements OnInit {
     let obj = {
       status: 0,
       profile_id: this.profileDetails.id,
-      deposit_id: data.id
+      deposit_id: data.id,
+      value: (data &&  data.deposithistories && Array.isArray(data.deposithistories) && data.deposithistories.length > 0) ? data.deposithistories[0].value : ''
     }
     this.addDepositFormGroup.patchValue(obj);
     this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
@@ -683,7 +683,7 @@ export class PortfoliosComponent implements OnInit {
       status: 0,
       profile_id: this.profileDetails.id,
       deposit_id: data.id,
-      value: data.value,
+      // value: data.value,
     }
     this.addWithdrawFormGroup.patchValue(obj);
     this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
@@ -709,5 +709,28 @@ export class PortfoliosComponent implements OnInit {
     this.selectedDepositHistory = loan;
     this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
   }
+
+  getWithdrawStatus(deposit: any) {    
+    let result = true;  
+    if (deposit?.deposithistories && Array.isArray(deposit?.deposithistories) && deposit?.deposithistories.length > 0) {
+      let withdrawal = deposit.deposithistories.find((element: any) => (element.type == 'withdraw' && element.status != 1));
+      if (withdrawal) {
+        result = false;
+      }
+    }  
+    return result;
+  }
+
+  getWithdrawAmount(deposit: any) {    
+    let result = '';  
+    if (deposit?.deposithistories && Array.isArray(deposit?.deposithistories) && deposit?.deposithistories.length > 0) {
+      let withdrawal = deposit.deposithistories.find((element: any) => (element.type == 'withdraw' && element.status == 2));
+      if (withdrawal) {
+        result = withdrawal.value;
+      }
+    }  
+    return result;
+  }
+  
 
 }

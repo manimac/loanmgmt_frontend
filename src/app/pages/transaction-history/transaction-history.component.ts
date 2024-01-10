@@ -135,6 +135,9 @@ export class TransactionHistoryComponent implements OnInit {
     else if(approval.type == 'Loan'){
       return approval.loanhistory ? approval.loanhistory.id : '';
     }
+    else if(approval.type == 'deposit' || approval.type == 'withdraw'){
+      return approval.deposithistory ? approval.deposithistory.id : '';
+    }
     else{
       return '';
     }
@@ -160,6 +163,11 @@ export class TransactionHistoryComponent implements OnInit {
         data = approval.repaymenthistory.loan_id;
       }
     }
+    else if(approval.type == 'deposit' || approval.type == 'withdraw'){
+      if(approval.deposithistory){
+        data = approval.deposithistory.units;
+      }
+    }
     return data;
   }
 
@@ -183,6 +191,11 @@ export class TransactionHistoryComponent implements OnInit {
         data = approval.repaymenthistory.amount;
       }
     }
+    else if(approval.type == 'deposit' || approval.type == 'withdraw'){
+      if(approval.deposithistory){
+        data = approval.deposithistory.value;
+      }
+    }
     return data;
   }
 
@@ -203,6 +216,11 @@ export class TransactionHistoryComponent implements OnInit {
     }
     else if(approval.type == 'Repayment'){
       data = '-';
+    }
+    else if(approval.type == 'deposit' || approval.type == 'withdraw'){
+      if(approval.deposithistory){
+        data = approval.deposithistory.rate;
+      }
     }
     return data;
   }

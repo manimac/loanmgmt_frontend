@@ -248,6 +248,7 @@
                         <th scope="col">Dep Name</th>
                         <th scope="col">Beneficiary</th>
                         <th scope="col">Type</th>
+                        <th scope="col">Payment Type</th>
                         <th scope="col">Tenure</th>
                         <th scope="col">Deposited</th>
                         <th scope="col">Approve</th>
@@ -256,11 +257,12 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{{approveDetails.deposithistory?.deposit?.number}}</td>
+                        <td>{{approveDetails.deposithistory?.deposit_id}}</td>
                         <td>{{approveDetails.deposithistory?.createdAt|date:'dd-MM-yyyy'}}</td>
                         <td>{{approveDetails.deposithistory?.deposit?.purpose}}</td>
                         <td>{{approveDetails.deposithistory?.deposit?.beneficiaryname}}</td>
                         <td class="text-capitalize">{{approveDetails.deposithistory?.deposit?.type}}</td>
+                        <td class="text-capitalize">{{approveDetails.deposithistory?.paymenttype}}</td>
                         <td>{{approveDetails.deposithistory?.deposit?.tenure}}</td>
                         <td>{{approveDetails.deposithistory?.value}}</td>
                         <td><button class="btn btn-success" (click)="updateStatus(2)">Approve</button></td>

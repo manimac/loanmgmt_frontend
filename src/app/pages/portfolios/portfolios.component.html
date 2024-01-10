@@ -230,7 +230,7 @@
                             <tr
                                 *ngFor="let deposit of depositLists | paginate: { id: 'pagination5', itemsPerPage: 5, currentPage: depositPage };let i=index;">
                                 <td><a href="javascript:void(0);"
-                                        (click)="openDepositHistoryFormModal(deposithistoryForm, deposit)">{{deposit.number}}</a>
+                                        (click)="openDepositHistoryFormModal(deposithistoryForm, deposit)">{{deposit.id}}</a>
                                 </td>
                                 <td>{{deposit.createdAt|date:'dd-MM-yyyy'}}</td>
                                 <td>{{deposit.purpose}}</td>
@@ -238,8 +238,8 @@
                                 <td>{{deposit.type}}</td>
                                 <td>{{deposit.tenure}}</td>
                                 <td>{{deposit.value}}</td>
-                                <td>1</td>
-                                <td>{{deposit.status==3? 'Yes' : 'No'}}</td>
+                                <td>{{deposit?.deposithistories?.length}}</td>
+                                <td [innerHtml]="getWithdrawAmount(deposit)"></td>
                                 <td [innerHtml]="getDepositStatus(deposit)"></td>
                                 <td>{{deposit.status==3 ? (deposit.updatedAt|date:'dd-MM-yyyy') : ''}}</td>
                                 <td><button class="btn btn-primary"
@@ -247,7 +247,7 @@
                                         *ngIf="deposit.type=='Monthly'&&deposit.status==2">D</button></td>
                                 <td><button class="btn btn-primary"
                                         (click)="openAddWithdrawModal(addWithdrawForm, deposit)"
-                                        *ngIf="deposit.status==2">W</button></td>
+                                        *ngIf="deposit.status==2&&getWithdrawStatus(deposit)">W</button></td>
                             </tr>
                             <tr *ngIf="depositLists.length==0" class="text-center">
                                 <td colspan="11">No records found</td>
@@ -550,12 +550,6 @@
             <div class="row">
                 <div class="col-lg-4">
                     <div class="form-group">
-                        <label>Deposit Number:</label>
-                        <input type="text" class="form-control" formControlName="number" placeholder="Deposit Number">
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="form-group">
                         <label>Deposit Purpose:</label>
                         <input type="text" class="form-control" formControlName="purpose" placeholder="Deposit Purpose">
                     </div>
@@ -586,7 +580,19 @@
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label>Tenure:</label>
-                        <input type="text" class="form-control" formControlName="tenure" placeholder="Tenure">
+                        <select class="form-control" formControlName="tenure">
+                            <option value="" disabled>Select Type</option>
+                            <option value="1 Year">1 Year</option>
+                            <option value="2 Years">2 Years</option>
+                            <option value="3 Years">3 Years</option>
+                            <option value="4 Years">4 Years</option>
+                            <option value="5 Years">5 Years</option>
+                            <option value="6 Years">6 Years</option>
+                            <option value="7 Years">7 Years</option>
+                            <option value="8 Years">8 Years</option>
+                            <option value="9 Years">9 Years</option>
+                            <option value="10 Years">10 Years</option>
+                        </select>
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -627,7 +633,7 @@
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label>Amount:</label>
-                        <input type="text" class="form-control" formControlName="value" placeholder="Deposit Amount">
+                        <input type="text" class="form-control" formControlName="value" placeholder="Deposit Amount" readonly>
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -663,7 +669,7 @@
                     <div class="form-group">
                         <label>Amount:</label>
                         <input type="text" class="form-control" formControlName="value" placeholder="Withdraw Amount"
-                            readonly>
+                            >
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -693,7 +699,6 @@
         </button>
     </div>
     <div class="modal-body" *ngIf="selectedDepositHistory">
-        <h5>Loan</h5>
         <div class="table-responsive">
             <table class="table table-bordered mt-3">
                 <thead>

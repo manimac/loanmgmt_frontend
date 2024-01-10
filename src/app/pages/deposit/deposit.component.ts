@@ -24,6 +24,7 @@ export class DepositComponent implements OnInit {
   selectedLoan: any;
   modalRef: any;
   depositPage: number = 1;
+  selectedDepositHistory: any;
 
   filterItems() {
     if (this.mobile) {
@@ -59,17 +60,39 @@ export class DepositComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
+    this.loadFilter();
+  }
+
+  loadFilter(){
+    this.http.post('loan/filterlistNumbers', {}).subscribe(
+      (response: any) => {
+        if (response) {
+          const mobileArray = response.map((item: any) => item.mobile);
+          this.listedMobiles = [...new Set(mobileArray)];
+          console.log(this.listedMobiles);
+        }
+      }, (error: any) => {
+        this.http.exceptionHandling(error);
+      }
+    )
   }
 
   loadData() {
     this.p = 1;
-    this.http.post('deposit/list', { mobile: this.mobile, status: this.status }).subscribe(
+    let params: any = {
+      mobile: this.mobile,
+      beneficiaryname: this.beneficiary
+    }
+    if(this.status){
+      params.status = this.status
+    }
+    this.http.post('deposit/list', params).subscribe(
       (response: any) => {
         this.depositLists = response;
       }, (error: any) => {
         this.http.exceptionHandling(error);
       }
-    )
+    )    
   }
 
   getNumberofDays(dDate: any, status: any) {
@@ -212,6 +235,11 @@ export class DepositComponent implements OnInit {
       status = 'Part Payment';
     }
     return status;
+  }
+
+  openDepositHistoryFormModal(template: TemplateRef<any>, loan: any) {
+    this.selectedDepositHistory = loan;
+    this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
   }
 
 }
