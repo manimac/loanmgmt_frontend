@@ -43,11 +43,12 @@
                                 <th scope="col">Withdrawn</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Closed Date</th>
+                                <th scope="col">Description</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr
-                                *ngFor="let deposit of depositLists | paginate: { id: 'pagination5', itemsPerPage: 5, currentPage: depositPage };let i=index;">
+                                *ngFor="let deposit of depositLists | paginate: { itemsPerPage: 10, currentPage: p };let i=index;">
                                 <td><a href="javascript:void(0);"
                                     (click)="openDepositHistoryFormModal(deposithistoryForm, deposit)">{{deposit.id}}</a></td>
                                 <td><a href="javascript:void(0);" routerLink="/portfolios" [queryParams]="{mobile: deposit.Profile?.mobile}">{{deposit.Profile?.mobile}}</a></td>
@@ -57,10 +58,11 @@
                                 <td>{{deposit.type}}</td>
                                 <td>{{deposit.tenure}}</td>
                                 <td>{{deposit.value}}</td>
-                                <td>{{deposit?.deposithistories?.length}}</td>
+                                <td [innerHtml]="getInstallment(deposit)"></td>
                                 <td>{{deposit.status==3? 'Yes' : 'No'}}</td>
                                 <td [innerHtml]="getDepositStatus(deposit)"></td>
                                 <td>{{deposit.updatedAt|date:'dd-MM-yyyy'}}</td>
+                                <td>{{deposit.description}}</td>
                             </tr>
                             <tr *ngIf="depositLists.length==0" class="text-center">
                                 <td colspan="11">No records found</td>

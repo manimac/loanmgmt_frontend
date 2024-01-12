@@ -78,10 +78,13 @@ export class HeaderComponent implements OnInit {
     }    
   }
 
-  togglechildNav(){
+  togglechildNav(id: any=false){
     let classNames = document.getElementsByClassName("bi-x");
     if(classNames && classNames.length>0){
       let navbar = document.getElementById("childnav");
+      if(id){
+        navbar = document.getElementById("childnav2");
+      }
       if(navbar){
         navbar.classList.toggle('dropdown-active');
       }

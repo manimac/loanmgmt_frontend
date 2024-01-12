@@ -1844,3 +1844,7 @@ section {
   background: #c2c2c2eb;
   cursor: pointer;
 }
+
+.form-control:focus{
+  box-shadow: none !important;
+}

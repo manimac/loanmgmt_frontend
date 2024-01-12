@@ -222,6 +222,7 @@
                                 <th scope="col">Withdrawn</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Closed Date</th>
+                                <th scope="col">Description</th>
                                 <th scope="col">Deposit</th>
                                 <th scope="col">Withdraw</th>
                             </tr>
@@ -238,16 +239,17 @@
                                 <td>{{deposit.type}}</td>
                                 <td>{{deposit.tenure}}</td>
                                 <td>{{deposit.value}}</td>
-                                <td>{{deposit?.deposithistories?.length}}</td>
+                                <td [innerHtml]="getInstallment(deposit)"></td>
                                 <td [innerHtml]="getWithdrawAmount(deposit)"></td>
                                 <td [innerHtml]="getDepositStatus(deposit)"></td>
                                 <td>{{deposit.status==3 ? (deposit.updatedAt|date:'dd-MM-yyyy') : ''}}</td>
+                                <td>{{deposit.description}}</td>
                                 <td><button class="btn btn-primary"
-                                        (click)="openAddDepositModal(addDepositForm, deposit)"
-                                        *ngIf="deposit.type=='Monthly'&&deposit.status==2">D</button></td>
+                                        (click)="openAddDepositModal(addDepositForm, deposit, ConfirmDepositForm)"
+                                        *ngIf="(deposit.type=='Savings'||deposit.type=='Regular')&&deposit.status==2&&getAvailableDepositWithdraw(deposit)">D</button></td>
                                 <td><button class="btn btn-primary"
-                                        (click)="openAddWithdrawModal(addWithdrawForm, deposit)"
-                                        *ngIf="deposit.status==2&&getWithdrawStatus(deposit)">W</button></td>
+                                        (click)="openAddWithdrawModal(addWithdrawForm, deposit, ConfirmWithdrawForm)"
+                                        *ngIf="deposit.status==2&&getWithdrawStatus(deposit)&&getAvailableDepositWithdraw(deposit)">W</button></td>
                             </tr>
                             <tr *ngIf="depositLists.length==0" class="text-center">
                                 <td colspan="11">No records found</td>
@@ -551,7 +553,7 @@
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label>Deposit Purpose:</label>
-                        <input type="text" class="form-control" formControlName="purpose" placeholder="Deposit Purpose">
+                        <input type="text" class="form-control" formControlName="purpose">
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -560,21 +562,22 @@
                         <select class="form-control" formControlName="type">
                             <option value="" disabled>Select Type</option>
                             <option value="Onetime">Onetime</option>
-                            <option value="Monthly">Monthly</option>
+                            <option value="Savings">Savings</option>
+                            <option value="Regular">Regular</option>
                         </select>
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label>Beneficiary Name:</label>
-                        <input type="text" class="form-control" formControlName="beneficiaryname"
-                            placeholder="Beneficiary Name">
+                        <input type="text" class="form-control" formControlName="beneficiaryname">
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label>Ins. Amount:</label>
-                        <input type="text" class="form-control" formControlName="value" placeholder="Ins. Amount">
+                        <input type="text" class="form-control" formControlName="value" appAcceptNumberDecimalAmount
+                        (keyup)="updateNewDepositUnits()">
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -608,7 +611,7 @@
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label>Description:</label>
-                        <input type="text" class="form-control" formControlName="description" placeholder="Description">
+                        <input type="text" class="form-control" formControlName="description">
                     </div>
                 </div>
             </div>
@@ -633,7 +636,7 @@
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label>Amount:</label>
-                        <input type="text" class="form-control" formControlName="value" placeholder="Deposit Amount" readonly>
+                        <input type="text" class="form-control" formControlName="value" [attr.disabled]="(selectedDeposit&&selectedDeposit.type=='Regular') ? null : true" appAcceptNumberDecimalAmount>
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -668,7 +671,8 @@
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label>Amount:</label>
-                        <input type="text" class="form-control" formControlName="value" placeholder="Withdraw Amount"
+                        <input type="text" class="form-control" formControlName="value" appAcceptNumberDecimalAmount
+                        (keyup)="updateWithdrawUnits()"
                             >
                     </div>
                 </div>
@@ -724,5 +728,39 @@
                 </tbody>
             </table>
         </div>
+    </div>
+</ng-template>
+
+
+<ng-template #ConfirmWithdrawForm>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Withdraw</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        Actual withdrawl date is {{selectedWithdrawDate}}
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="proceedWithdraw(addWithdrawForm)">Proceed</button>
+        <button type="button" class="btn btn-info" (click)="modalRef.hide()">Cancel</button>
+    </div>
+</ng-template>
+
+
+<ng-template #ConfirmDepositForm>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Deposit Warning</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        You have already deposited this month. Do you still want to proceed?
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="depositingAmount(addDepositForm, true)">Proceed</button>
+        <button type="button" class="btn btn-info" (click)="modalRef.hide()">Cancel</button>
     </div>
 </ng-template>

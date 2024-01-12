@@ -44,6 +44,10 @@ export class PortfoliosComponent implements OnInit {
   repaymentPage: number = 1;
   paymentTypes: any = []; listedMobiles: any = [];
   filteredItems: string[] = [];
+  isConfirmPopup: boolean = false;
+  selectedWithdraw: any = '';
+  selectedWithdrawDate: any = '';
+  selectedDeposit: any = '';
 
   filterItems() {
     if (this.searchFormGroup.value.mobile) {
@@ -95,6 +99,8 @@ export class PortfoliosComponent implements OnInit {
       description: new FormControl('', Validators.required),
       profile_id: new FormControl('', Validators.required),
       status: new FormControl(0, Validators.required),
+      units: new FormControl('', Validators.required),
+      rate: new FormControl(''),
     })
     this.addDepositFormGroup = new FormGroup({
       deposit_id: new FormControl('', Validators.required),
@@ -102,6 +108,8 @@ export class PortfoliosComponent implements OnInit {
       paymenttype: new FormControl('', Validators.required),
       profile_id: new FormControl('', Validators.required),
       type: new FormControl('deposit', Validators.required),
+      units: new FormControl('', Validators.required),
+      rate: new FormControl(''),
       status: new FormControl(0)
     })
     this.addWithdrawFormGroup = new FormGroup({
@@ -110,6 +118,8 @@ export class PortfoliosComponent implements OnInit {
       paymenttype: new FormControl('', Validators.required),
       profile_id: new FormControl('', Validators.required),
       type: new FormControl('withdraw', Validators.required),
+      units: new FormControl('', Validators.required),
+      rate: new FormControl(''),
       status: new FormControl(0)
     })
     this.investmentFormGroup = new FormGroup({
@@ -259,6 +269,8 @@ export class PortfoliosComponent implements OnInit {
             this.repayment = response.repayment;
           }
         }
+        this.numberOfUnits = 0;
+        this.unitsValue = 0;
         if (response && response.investment) {
           if (this.role == 'Client') {
             this.investmentLists = response.investment.filter((element: any) => (element.status != 1));
@@ -266,19 +278,17 @@ export class PortfoliosComponent implements OnInit {
           else {
             this.investmentLists = response.investment;
           }
-          // this.investmentLists = response.investment;
-          this.numberOfUnits = 0;
-          this.unitsValue = 0;
+          // this.investmentLists = response.investment;          
           this.investmentLists.forEach((element: any) => {
             if (element.status == 2) {
               element.units = parseFloat(element.units).toFixed(4);
               if (element.type == 'Redeem') {
-                this.unitsValue = this.unitsValue - Number(element.value);
-                this.numberOfUnits = this.numberOfUnits - Number(element.units);
+                this.unitsValue = Number(this.unitsValue) - Number(element.value);
+                this.numberOfUnits = Number(this.numberOfUnits) - Number(element.units);
               }
               else {
-                this.unitsValue = this.unitsValue + Number(element.value);
-                this.numberOfUnits = this.numberOfUnits + Number(element.units);
+                this.unitsValue = Number(this.unitsValue) + Number(element.value);
+                this.numberOfUnits = Number(this.numberOfUnits) + Number(element.units);
               }
             }
           });
@@ -293,6 +303,24 @@ export class PortfoliosComponent implements OnInit {
           else {
             this.depositLists = response.deposit;
           }
+        }
+        if (response && response.depositAcc && Array.isArray(response.depositAcc) && (response.depositAcc.length>0) && response.profile && response.profile.mobile == '3333333333') {
+          response.depositAcc.forEach((element1: any) => {
+            element1.deposithistories.forEach((element2: any) => {
+            if (element2.status == 2) {
+              element2.units = element2.units ? parseFloat(element2.units).toFixed(4) : 0;
+              if (element2.type == 'withdraw') {
+                this.unitsValue = element2.value ? Number(this.unitsValue) - Number(element2.value) : this.unitsValue;
+                this.numberOfUnits = element2.units ? Number(this.numberOfUnits) - Number(element2.units) : this.numberOfUnits;
+              }
+              else {
+                this.unitsValue = element2.value ? Number(this.unitsValue) + Number(element2.value) : this.unitsValue;
+                this.numberOfUnits = element2.units ? Number(this.numberOfUnits) + Number(element2.units) : this.numberOfUnits;
+              }
+            }
+          });
+          });
+          this.numberOfUnits = parseFloat(this.numberOfUnits).toFixed(4);
         }
       },
       (error: any) => {
@@ -484,7 +512,8 @@ export class PortfoliosComponent implements OnInit {
   openDepositModal(template: TemplateRef<any>) {
     let obj = {
       status: 0,
-      profile_id: this.profileDetails.id
+      profile_id: this.profileDetails.id,
+      rate: Number(this.reportData.unitRate).toFixed(4)
     }
     this.depositFormGroup.patchValue(obj);
     this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
@@ -608,6 +637,33 @@ export class PortfoliosComponent implements OnInit {
     }
   }
 
+  updateNewDepositUnits() {
+    let data: any = 0;
+    if (Number(this.depositFormGroup.value.value) && Number(this.depositFormGroup.value.rate)) {
+      data = Number(this.depositFormGroup.value.value) / Number(this.depositFormGroup.value.rate);
+      data = parseFloat(data).toFixed(2);
+      this.depositFormGroup.patchValue({ units: data });
+    }
+  }
+
+  updateDepositUnits() {
+    let data: any = 0;
+    if (Number(this.addDepositFormGroup.value.value) && Number(this.addDepositFormGroup.value.rate)) {
+      data = Number(this.addDepositFormGroup.value.value) / Number(this.addDepositFormGroup.value.rate);
+      data = parseFloat(data).toFixed(2);
+      this.addDepositFormGroup.patchValue({ units: data });
+    }
+  }
+
+  updateWithdrawUnits() {
+    let data: any = 0;
+    if (Number(this.addWithdrawFormGroup.value.value) && Number(this.addWithdrawFormGroup.value.rate)) {
+      data = Number(this.addWithdrawFormGroup.value.value) / Number(this.addWithdrawFormGroup.value.rate);
+      data = parseFloat(data).toFixed(2);
+      this.addWithdrawFormGroup.patchValue({ units: data });
+    }
+  }
+
   getcurrentValue() {
     let data: any = 0;
     if (this.numberOfUnits && this.reportData && this.reportData.unitRate) {
@@ -638,6 +694,7 @@ export class PortfoliosComponent implements OnInit {
         this.http.successMessage('Deposit added');
         this.modalRef.hide()
         this.depositFormGroup.reset()
+        this.depositFormGroup.patchValue({'deposittype': 'Deposit'})
         this.submit()
       },
       (error: any) => {
@@ -651,14 +708,48 @@ export class PortfoliosComponent implements OnInit {
 
   }  
 
-  openAddDepositModal(template: TemplateRef<any>, data: any) {
+  isTransactionInCurrentMonth(transaction: any) {
+    // Get the current date
+    const currentDate = new Date();
+  
+    // Extract the month and year from the 'createdAt' field
+    const transactionDate = new Date(transaction.createdAt);
+    const transactionMonth = transactionDate.getMonth();
+    const transactionYear = transactionDate.getFullYear();
+  
+    // Check if the transaction occurred in the current month and year
+    return (
+      transactionMonth === currentDate.getMonth() &&
+      transactionYear === currentDate.getFullYear()&&
+      transaction.status==2
+    );
+  }
+
+  openAddDepositModal(template: TemplateRef<any>, data: any, ConfirmDepositForm: any) {
+    const transactionInCurrentMonth = data.deposithistories.some(this.isTransactionInCurrentMonth);
+    this.selectedDeposit = data;
+    if(!transactionInCurrentMonth){
+      this.depositingAmount(template, false);
+    }
+    else{
+      this.modalRef = this.modalService.show(ConfirmDepositForm, { class: 'modal-lg', backdrop: 'static' });
+    }    
+  }
+
+  depositingAmount(template: TemplateRef<any>, isPopup: any){
+    if(isPopup){
+      this.modalRef.hide();
+    }
+    let data = this.selectedDeposit;
     let obj = {
       status: 0,
       profile_id: this.profileDetails.id,
       deposit_id: data.id,
-      value: (data &&  data.deposithistories && Array.isArray(data.deposithistories) && data.deposithistories.length > 0) ? data.deposithistories[0].value : ''
+      value: (data &&  data.deposithistories && Array.isArray(data.deposithistories) && data.deposithistories.length > 0) ? data.deposithistories[0].value : '',
+      rate: Number(this.reportData.unitRate).toFixed(4)
     }
     this.addDepositFormGroup.patchValue(obj);
+    this.updateDepositUnits();
     this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
   }
 
@@ -678,11 +769,63 @@ export class PortfoliosComponent implements OnInit {
     )
   }
 
-  openAddWithdrawModal(template: TemplateRef<any>, data: any) {
+  getClosingDate(data: any) {
+    const currentDate = new Date(data.createdAt);
+    let tenure: any = 1;
+    if(data.tenure){
+      let st = data.tenure.split(" ");
+      if(data.tenure.length > 0){
+        tenure = st[0];
+      }
+    }
+    currentDate.setFullYear(currentDate.getFullYear() + parseInt(tenure));
+    return currentDate;
+  }
+
+  checkFutureOrPast(dateToCheck: any) {
+    const providedDate = new Date(dateToCheck);
+    const currentDate = new Date();
+    if (providedDate > currentDate) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  openAddWithdrawModal(template: TemplateRef<any>, data: any, ConfirmWithdrawForm: any) {
+    this.selectedWithdraw = data;
+    this.selectedWithdrawDate = '';
+    if(this.checkFutureOrPast(this.getClosingDate(data))){      
+      this.isConfirmPopup = true;
+      const today: any = new Date(this.getClosingDate(data));
+      const yyyy: any = today.getFullYear();
+      let mm: any = today.getMonth() + 1; // Months start at 0!
+      let dd: any = today.getDate();
+      let hh: any = today.getHours();
+      let mi: any = today.getMinutes();
+
+      if (dd < 10) dd = '0' + dd;
+      if (mm < 10) mm = '0' + mm;
+
+      const formattedToday = dd + '-' + mm + '-' + yyyy + " " + hh + ":" + mi;
+      this.selectedWithdrawDate = formattedToday;
+      this.modalRef = this.modalService.show(ConfirmWithdrawForm, { class: 'modal-lg', backdrop: 'static' });
+    }
+    else{
+      this.proceedWithdraw(template)
+    }    
+  }
+
+  proceedWithdraw(template: any){
+    this.modalRef.hide()
+    let data = this.selectedWithdraw;
+    this.isConfirmPopup = false;
+    console.log(this.checkFutureOrPast(this.getClosingDate(data)))
     let obj = {
       status: 0,
       profile_id: this.profileDetails.id,
       deposit_id: data.id,
+      rate: Number(this.reportData.unitRate).toFixed(4)
       // value: data.value,
     }
     this.addWithdrawFormGroup.patchValue(obj);
@@ -695,6 +838,7 @@ export class PortfoliosComponent implements OnInit {
     this.http.post('deposithistory/create', this.addWithdrawFormGroup.value).subscribe(
       (response: any) => {
         this.http.successMessage('Withdraw updated');
+        this.modalRef.hide()
         this.modalRef.hide()
         this.depositFormGroup.reset()
         this.submit()
@@ -729,6 +873,26 @@ export class PortfoliosComponent implements OnInit {
         result = withdrawal.value;
       }
     }  
+    return result;
+  }
+
+  getInstallment(deposit: any){
+    let result = 0;
+    if (deposit?.deposithistories && Array.isArray(deposit?.deposithistories) && deposit?.deposithistories.length > 0) {
+      let depositList = deposit.deposithistories.filter((element: any) => (element.type == 'deposit' && element.status == 2));
+      result = depositList ? depositList.length : 0;
+    }  
+    return result;
+  }
+
+  getAvailableDepositWithdraw(deposit: any){
+    let result = true;
+    if (deposit?.deposithistories && Array.isArray(deposit?.deposithistories) && deposit?.deposithistories.length > 0) {
+      let depositList = deposit.deposithistories.find((element: any) => (element.type == 'deposit' && element.status == 0));
+      if(depositList){
+        result = false;
+      }
+    }
     return result;
   }
   

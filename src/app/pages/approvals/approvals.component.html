@@ -29,7 +29,7 @@
                                 </td>
                                 <td>{{approval.profile?.name}}</td>
                                 <td>{{approval.profile?.mobile}}</td>
-                                <td>{{approval.type}}</td>
+                                <td class="text-capitalize">{{approval.type}}</td>
                                 <td>
                                     <span *ngIf="approval.repaymenthistory">{{approval.repaymenthistory?.createdAt|date:'dd-MM-yyyy'}}</span>
                                     <span *ngIf="approval.loanhistory">{{approval.loanhistory?.createdAt|date:'dd-MM-yyyy'}}</span>
@@ -265,7 +265,7 @@
                         <td class="text-capitalize">{{approveDetails.deposithistory?.paymenttype}}</td>
                         <td>{{approveDetails.deposithistory?.deposit?.tenure}}</td>
                         <td>{{approveDetails.deposithistory?.value}}</td>
-                        <td><button class="btn btn-success" (click)="updateStatus(2)">Approve</button></td>
+                        <td><button class="btn btn-success" (click)="openAddWithdrawModal(ConfirmWithdrawForm, approveDetails.deposithistory, approveDetails)">Approve</button></td>
                         <td><button class="btn btn-danger" (click)="updateStatus(1)">Decline</button></td>
                     </tr>
                 </tbody>
@@ -273,3 +273,19 @@
         </div>        
     </div>
  </ng-template>
+
+ <ng-template #ConfirmWithdrawForm>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Withdraw</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        Actual withdrawl date is {{selectedWithdrawDate}}
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="updateStatus(2)">Proceed</button>
+        <button type="button" class="btn btn-info" (click)="modalRef.hide()">Cancel</button>
+    </div>
+</ng-template>

@@ -17,13 +17,12 @@ export class DepositComponent implements OnInit {
   mobile: any = '';
   beneficiary: any = '';
   status: any = '2';
-  p: number = 1;
   isEnableAdminManagerAccess: boolean = false;
   listedMobiles: any = [];
   filteredItems: string[] = [];
   selectedLoan: any;
   modalRef: any;
-  depositPage: number = 1;
+  p: number = 1;
   selectedDepositHistory: any;
 
   filterItems() {
@@ -240,6 +239,15 @@ export class DepositComponent implements OnInit {
   openDepositHistoryFormModal(template: TemplateRef<any>, loan: any) {
     this.selectedDepositHistory = loan;
     this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
+  }
+
+  getInstallment(deposit: any){
+    let result = 0;
+    if (deposit?.deposithistories && Array.isArray(deposit?.deposithistories) && deposit?.deposithistories.length > 0) {
+      let depositList = deposit.deposithistories.filter((element: any) => (element.type == 'deposit' && element.status == 2));
+      result = depositList ? depositList.length : 0;
+    }  
+    return result;
   }
 
 }
