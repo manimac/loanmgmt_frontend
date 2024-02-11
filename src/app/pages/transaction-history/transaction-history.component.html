@@ -52,9 +52,9 @@
                                 <td [innerHtml]="getRate(approval)"></td>
                                 <td [innerHtml]="getUnitsLoanNo(approval)"></td>
                                 <td>{{approval.maker?.name}} / {{approval.maker?.mobile}}</td>
-                                <td>{{approval.checker?.name}} / {{approval.checker?.mobile}}</td>
+                                <td>{{approval.checker?.name}} <span *ngIf="approval.checker?.name">/</span> {{approval.checker?.mobile}}</td>
                                 <td [innerHtml]="getTransactionStatus(approval)"></td>
-                                <td>{{approval.updatedAt|date:'medium'}}</td>
+                                <td><span *ngIf="getTransactionStatus(approval)!='Pending'">{{approval.updatedAt|date:'medium'}}</span></td>
                             </tr>
                             <tr *ngIf="approvalLists.length==0" class="text-center">
                                 <td colspan="11">No records found</td>

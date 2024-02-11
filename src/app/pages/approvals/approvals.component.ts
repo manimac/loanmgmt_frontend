@@ -198,7 +198,7 @@ export class ApprovalsComponent implements OnInit {
             numberOfUnits = parseFloat(numberOfUnits).toFixed(4);
           }
           console.log(numberOfUnits);
-          if (numberOfUnits < data.units) {
+          if (Number(numberOfUnits) < Number(data.units)) {
             this.http.errorMessage("Please withdraw with in your current value")
           }
           else {

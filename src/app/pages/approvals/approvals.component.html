@@ -251,6 +251,7 @@
                         <th scope="col">Payment Type</th>
                         <th scope="col">Tenure</th>
                         <th scope="col">Deposited</th>
+                        <th scope="col">Description</th>
                         <th scope="col">Approve</th>
                         <th scope="col">Decline</th>
                     </tr>                 
@@ -265,6 +266,7 @@
                         <td class="text-capitalize">{{approveDetails.deposithistory?.paymenttype}}</td>
                         <td>{{approveDetails.deposithistory?.deposit?.tenure}}</td>
                         <td>{{approveDetails.deposithistory?.value}}</td>
+                        <td>{{approveDetails.deposithistory?.deposit?.description}}</td>
                         <td><button class="btn btn-success" (click)="openAddWithdrawModal(ConfirmWithdrawForm, approveDetails.deposithistory, approveDetails)">Approve</button></td>
                         <td><button class="btn btn-danger" (click)="updateStatus(1)">Decline</button></td>
                     </tr>

@@ -748,6 +748,9 @@ export class PortfoliosComponent implements OnInit {
       value: (data &&  data.deposithistories && Array.isArray(data.deposithistories) && data.deposithistories.length > 0) ? data.deposithistories[0].value : '',
       rate: Number(this.reportData.unitRate).toFixed(4)
     }
+    if(obj.value && data.type == 'Regular'){
+      obj.value = '';
+    }
     this.addDepositFormGroup.patchValue(obj);
     this.updateDepositUnits();
     this.modalRef = this.modalService.show(template, { class: 'modal-lg', backdrop: 'static' });
@@ -888,7 +891,7 @@ export class PortfoliosComponent implements OnInit {
   getAvailableDepositWithdraw(deposit: any){
     let result = true;
     if (deposit?.deposithistories && Array.isArray(deposit?.deposithistories) && deposit?.deposithistories.length > 0) {
-      let depositList = deposit.deposithistories.find((element: any) => (element.type == 'deposit' && element.status == 0));
+      let depositList = deposit.deposithistories.find((element: any) => ((element.type == 'deposit'||element.type == 'withdraw') && element.status == 0));
       if(depositList){
         result = false;
       }

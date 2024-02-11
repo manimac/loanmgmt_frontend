@@ -13,7 +13,12 @@
                         </ul>
                     </div>
                     <div class="col-lg-3">
-                        <input type="text" class="form-control" [(ngModel)]="beneficiary" placeholder="Beneficiary Name">
+                        <select class="form-control" [(ngModel)]="type">
+                            <option value="" disabled>Type</option>
+                            <option value="Onetime">One Time</option>
+                            <option value="Savings">Savings</option>
+                            <option value="Regular">Regular</option>
+                        </select>
                     </div>
                     <div class="col-lg-2">
                         <select class="form-control" [(ngModel)]="status">
@@ -61,7 +66,7 @@
                                 <td [innerHtml]="getInstallment(deposit)"></td>
                                 <td>{{deposit.status==3? 'Yes' : 'No'}}</td>
                                 <td [innerHtml]="getDepositStatus(deposit)"></td>
-                                <td>{{deposit.updatedAt|date:'dd-MM-yyyy'}}</td>
+                                <td>{{deposit.status==3 ? (deposit.updatedAt|date:'dd-MM-yyyy') : ''}}</td>
                                 <td>{{deposit.description}}</td>
                             </tr>
                             <tr *ngIf="depositLists.length==0" class="text-center">

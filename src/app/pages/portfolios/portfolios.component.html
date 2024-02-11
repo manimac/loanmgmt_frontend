@@ -636,7 +636,9 @@
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label>Amount:</label>
-                        <input type="text" class="form-control" formControlName="value" [attr.disabled]="(selectedDeposit&&selectedDeposit.type=='Regular') ? null : true" appAcceptNumberDecimalAmount>
+                        <input type="text" class="form-control" formControlName="value" [attr.disabled]="(selectedDeposit&&selectedDeposit.type=='Regular') ? null : true" appAcceptNumberDecimalAmount
+                        (keyup)="updateDepositUnits()"
+                            >
                     </div>
                 </div>
                 <div class="col-lg-4">

@@ -16,6 +16,7 @@ export class DepositComponent implements OnInit {
   depositLists: any = [];
   mobile: any = '';
   beneficiary: any = '';
+  type: any = '';
   status: any = '2';
   isEnableAdminManagerAccess: boolean = false;
   listedMobiles: any = [];
@@ -80,7 +81,8 @@ export class DepositComponent implements OnInit {
     this.p = 1;
     let params: any = {
       mobile: this.mobile,
-      beneficiaryname: this.beneficiary
+      beneficiaryname: this.beneficiary,
+      type: this.type
     }
     if(this.status){
       params.status = this.status

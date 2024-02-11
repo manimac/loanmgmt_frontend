@@ -239,6 +239,9 @@ export class TransactionHistoryComponent implements OnInit {
     else if(approval.type == 'Loan'){
       status = approval.loanhistory ? approval.loanhistory.status : '';
     }
+    else if(approval.type == 'deposit' || approval.type == 'withdraw'){
+      status = approval.deposithistory ? approval.deposithistory.status : '';
+    }
     else{
       status = '';
     }
